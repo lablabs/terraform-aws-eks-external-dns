@@ -44,3 +44,9 @@ variable "k8s_service_account_name" {
   default     = "external-dns"
   description = "The k8s external-dns service account name"
 }
+
+#dependence variable binds all AWS resources allocated by
+#this module. Dependent modules reference this variable
+variable "mod_dependency" {
+  default = null
+}

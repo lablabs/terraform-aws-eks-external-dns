@@ -1,6 +1,7 @@
 data "helm_repository" "default" {
   name = var.helm_repo_name
   url  = var.helm_repo_url
+  depends_on  = [var.mod_dependency] 
 }
 
 data "aws_region" "current" {}
@@ -12,6 +13,7 @@ resource "helm_release" "external_dns" {
   chart      = var.helm_chart_name
   namespace  = var.k8s_namespace
   version    = var.helm_chart_version
+  depends_on  = [var.mod_dependency]
 
   values = [
     "${templatefile("${path.module}/templates/values.yaml.tpl",

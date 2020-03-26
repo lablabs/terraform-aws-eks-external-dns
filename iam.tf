@@ -1,4 +1,5 @@
 resource "kubernetes_namespace" "external_dns" {
+  depends_on  = [var.mod_dependency] 
   count = (var.enabled && var.k8s_namespace != "kube-system") ? 1 : 0
 
   metadata {
@@ -9,6 +10,7 @@ resource "kubernetes_namespace" "external_dns" {
 ### iam ###
 # Policy
 data "aws_iam_policy_document" "external_dns" {
+  depends_on  = [var.mod_dependency] 
   count = var.enabled ? 1 : 0
 
   statement {
@@ -43,6 +45,7 @@ data "aws_iam_policy_document" "external_dns" {
 }
 
 resource "aws_iam_policy" "external_dns" {
+  depends_on  = [var.mod_dependency] 
   count       = var.enabled ? 1 : 0
   name        = "${var.cluster_name}-external-dns"
   path        = "/"
@@ -53,6 +56,7 @@ resource "aws_iam_policy" "external_dns" {
 
 # Role
 data "aws_iam_policy_document" "external_dns_assume" {
+  depends_on  = [var.mod_dependency] 
   count = var.enabled ? 1 : 0
 
   statement {
@@ -77,12 +81,14 @@ data "aws_iam_policy_document" "external_dns_assume" {
 }
 
 resource "aws_iam_role" "external_dns" {
+  depends_on  = [var.mod_dependency] 
   count              = var.enabled ? 1 : 0
   name               = "${var.cluster_name}-external-dns"
   assume_role_policy = data.aws_iam_policy_document.external_dns_assume[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
+  depends_on  = [var.mod_dependency] 
   count      = var.enabled ? 1 : 0
   role       = aws_iam_role.external_dns[0].name
   policy_arn = aws_iam_policy.external_dns[0].arn
