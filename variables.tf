@@ -44,3 +44,7 @@ variable "k8s_service_account_name" {
   default     = "external-dns"
   description = "The k8s external-dns service account name"
 }
+
+variable "mod_dependency" {
+  default = null
+}
