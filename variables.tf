@@ -3,6 +3,11 @@ variable "cluster_name" {}
 variable "cluster_identity_oidc_issuer" {}
 variable "cluster_identity_oidc_issuer_arn" {}
 
+variable "policy_allowed_zone_ids" {
+  type = list(string)
+  default = ["*"]
+}
+
 # external-dns
 variable "enabled" {
   type = bool

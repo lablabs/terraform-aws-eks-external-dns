@@ -17,12 +17,9 @@ data "aws_iam_policy_document" "external_dns" {
 
     actions = [
       "route53:ChangeResourceRecordSets",
-      "route53:ListTagsForResource"
     ]
 
-    resources = [
-      "arn:aws:route53:::hostedzone/*",
-    ]
+    resources = [ for id in var.policy_allowed_zone_ids: "arn:aws:route53:::hostedzone/${id}"]
 
     effect = "Allow"
   }
@@ -33,6 +30,7 @@ data "aws_iam_policy_document" "external_dns" {
     actions = [
       "route53:ListHostedZones",
       "route53:ListResourceRecordSets",
+      "route53:ListTagsForResource",
     ]
 
     resources = [
