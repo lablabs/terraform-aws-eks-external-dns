@@ -39,6 +39,7 @@ A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 | k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
 | mod\_dependency | Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable | `any` | `null` | no |
+| policy\_allowed\_zone\_ids | n/a | `list(string)` | <pre>[<br>  "*"<br>]</pre> | no |
 | zone\_tags\_filters | n/a | `list(string)` | <pre>[<br>  "external-dns=true"<br>]</pre> | no |
 
 ## Outputs

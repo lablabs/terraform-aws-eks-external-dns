@@ -5,7 +5,7 @@ variable "cluster_identity_oidc_issuer" {}
 variable "cluster_identity_oidc_issuer_arn" {}
 
 variable "policy_allowed_zone_ids" {
-  type = list(string)
+  type    = list(string)
   default = ["*"]
 }
 
