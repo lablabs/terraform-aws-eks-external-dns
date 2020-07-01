@@ -1,19 +1,22 @@
 # Required module inputs
+
 variable "cluster_name" {}
 variable "cluster_identity_oidc_issuer" {}
 variable "cluster_identity_oidc_issuer_arn" {}
 
 # external-dns
+
 variable "enabled" {
   type = bool
 }
 
 variable "zone_tags_filters" {
-  type    = list
+  type    = list(string)
   default = ["external-dns=true"]
 }
 
 # Helm
+
 variable "helm_chart_name" {
   default = "external-dns"
 }
@@ -35,6 +38,7 @@ variable "helm_repo_url" {
 }
 
 # K8S
+
 variable "k8s_namespace" {
   default     = "kube-system"
   description = "The k8s namespace in which the external-dns service account has been created"
@@ -46,5 +50,6 @@ variable "k8s_service_account_name" {
 }
 
 variable "mod_dependency" {
-  default = null
+  default     = null
+  description = "Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable"
 }
