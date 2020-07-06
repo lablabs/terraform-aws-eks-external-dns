@@ -1,0 +1,93 @@
+name: Terraform validation
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  TERRAFORM_DOCS_VERSION: "v0.9.1"
+  TFLINT_VERSION: "v0.16.2"
+
+jobs:
+  terraform-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-python@v1
+        name: "SETUP: Python"
+
+      - uses: actions/setup-go@v2
+        name: "SETUP: Go"
+
+      - uses: pat-s/always-upload-cache@v2.0.0
+        id: cache-terraform-docs
+        name: "CACHE: terraform-docs Go module"
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/go/bin/terraform-docs
+          key: ${{ runner.os }}-terraform_docs-${{ env.TERRAFORM_DOCS_VERSION }}
+          restore-keys: |
+            ${{ runner.os}}-terraform_docs-
+
+      - shell: bash
+        name: "INSTALL: terraform-docs"
+        if: steps.cache-terraform-docs.output.cache-hit != 'true'
+        env:
+          GO111MODULE: "on"
+        run: |
+          go get github.com/segmentio/terraform-docs@${{ env.TERRAFORM_DOCS_VERSION }}
+
+      - shell: bash
+        name: "SETUP: Go path"
+        run: echo '::add-path::~/go/bin/'
+
+      - uses: actions/checkout@v1
+        name: Checkout source code
+
+      - uses: pat-s/always-upload-cache@v2.0.0
+        id: cache-pre-commit-dependencies
+        name: "CACHE: pip and pre-commit dependencies"
+        with:
+          path: |
+            ~/.cache/pre-commit
+            ~/.cache/pip
+          key: ${{ runner.os }}-pip-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-pre-commit-
+
+      - uses: pat-s/always-upload-cache@v2.0.0
+        id: cache-tflint
+        name: "CACHE: TFLint"
+        with:
+          path: |
+            ~/tflint/bin/
+          key: ${{ runner.os }}-tflint-${{ env.TFLINT_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-tflint-
+
+      - shell: bash
+        name: "INSTALL: detect-secrets"
+        run: |
+          pip install detect-secrets
+
+      - shell: bash
+        name: "INSTALL: TFLint"
+        if: steps.cache-tflint.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/terraform-linters/tflint/releases/download/${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
+          unzip tflint_linux_amd64.zip
+          mkdir -p ~/tflint/bin/
+          install tflint ~/tflint/bin/
+
+      - shell: bash
+        name: "SETUP: TFLint path"
+        run: |
+          echo '::add-path::~/tflint/bin/'
+
+      - uses: pre-commit/action@v2.0.0
+        name: "RUN: pre-commit"
+        env:
+          AWS_DEFAULT_REGION: "eu-central-1"
