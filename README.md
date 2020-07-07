@@ -34,7 +34,6 @@ A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 | helm\_chart\_name | n/a | `string` | `"external-dns"` | no |
 | helm\_chart\_version | n/a | `string` | `"2.11.0"` | no |
 | helm\_release\_name | n/a | `string` | `"external-dns"` | no |
-| helm\_repo\_name | n/a | `string` | `"stable"` | no |
 | helm\_repo\_url | n/a | `string` | `"https://kubernetes-charts.storage.googleapis.com"` | no |
 | k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
