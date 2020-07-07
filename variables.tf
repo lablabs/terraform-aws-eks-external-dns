@@ -34,10 +34,6 @@ variable "helm_release_name" {
   default = "external-dns"
 }
 
-variable "helm_repo_name" {
-  default = "stable"
-}
-
 variable "helm_repo_url" {
   default = "https://kubernetes-charts.storage.googleapis.com"
 }
