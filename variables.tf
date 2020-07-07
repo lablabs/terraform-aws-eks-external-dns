@@ -27,7 +27,7 @@ variable "helm_chart_name" {
 }
 
 variable "helm_chart_version" {
-  default = "2.11.0"
+  default = "3.2.3"
 }
 
 variable "helm_release_name" {
@@ -35,7 +35,7 @@ variable "helm_release_name" {
 }
 
 variable "helm_repo_url" {
-  default = "https://kubernetes-charts.storage.googleapis.com"
+  default = "https://charts.bitnami.com/bitnami"
 }
 
 # K8S
