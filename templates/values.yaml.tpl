@@ -24,32 +24,24 @@ txtOwnerId: ${ cluster_name }
 ##
 replicas: 1
 
+## Service Account for pods
+## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+    name: ${ service_account_name }
+    annotations:
+        eks.amazonaws.com/role-arn: ${ external_dns_iam_role_arn }
+
 ## RBAC parameteres
 ## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
   create: true
-  ## Service Account for pods
-  ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-  ##
-  serviceAccountName: ${ service_account_name }
   ## RBAC API version
   ##
   apiVersion: v1beta1
   ## Podsecuritypolicy
   ##
   pspEnabled: false
-  ## Additional Service Account annotations
-  serviceAccountAnnotations:
-    eks.amazonaws.com/role-arn: ${ external_dns_iam_role_arn }
-
-## Bitnami external-dns image version
-## ref: https://hub.docker.com/r/bitnami/external-dns/tags/
-##
-image:
-  registry: docker.io
-  repository: bitnami/external-dns
-  tag: 0.5.17-debian-9-r25
 
 ## K8s resources type to be observed for new DNS entries by ExternalDNS
 ##
