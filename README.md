@@ -7,6 +7,7 @@ We help companies build, run, deploy and scale software and infrastructure by em
 ---
 
 ![Terraform validation](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/Terraform%20validation/badge.svg?branch=master)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-success?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 ## Description
 
@@ -50,6 +51,18 @@ No output.
 ## Contributing and reporting issues
 
 Feel free to create an issue in this repository if you have questions, suggestions or feature requests.
+
+### Validation, linters and pull-requests
+
+We want to provide high quality code and modules. For this reason we are using
+several [pre-commit hooks](.pre-commit-config.yaml) and
+[GitHub Actions workflow](.github/workflows/main.yml). A pull-request to the
+master branch will trigger these validations and lints automatically. Please
+check your code before you will create pull-requests. See
+[pre-commit documentation](https://pre-commit.com/) and
+[GitHub Actions documentation](https://docs.github.com/en/actions) for further
+details.
+
 
 ## License
 
