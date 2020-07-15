@@ -77,7 +77,7 @@ logLevel: info
 
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
 ##
-policy: upsert-only
+policy: ${ policy }
 
 ## Registry Type. Available types are: txt, noop
 ## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/docs/proposal/registry.md

@@ -33,12 +33,13 @@ A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 | cluster\_name | n/a | `any` | n/a | yes |
 | enabled | n/a | `bool` | n/a | yes |
 | helm\_chart\_name | n/a | `string` | `"external-dns"` | no |
-| helm\_chart\_version | n/a | `string` | `"2.11.0"` | no |
+| helm\_chart\_version | n/a | `string` | `"3.2.3"` | no |
 | helm\_release\_name | n/a | `string` | `"external-dns"` | no |
-| helm\_repo\_url | n/a | `string` | `"https://kubernetes-charts.storage.googleapis.com"` | no |
+| helm\_repo\_url | n/a | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
 | mod\_dependency | Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable | `any` | `null` | no |
+| policy | Policy for creating or updating records. Possible values: "sync" - allows for full synchronization of DNS records or "upsert-only" - allows everything but deleting DNS records. | `string` | `"upsert-only"` | no |
 | policy\_allowed\_zone\_ids | n/a | `list(string)` | <pre>[<br>  "*"<br>]</pre> | no |
 | zone\_tags\_filters | n/a | `list(string)` | <pre>[<br>  "external-dns=true"<br>]</pre> | no |
 

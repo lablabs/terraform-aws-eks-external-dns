@@ -20,6 +20,11 @@ variable "zone_tags_filters" {
   default = ["external-dns=true"]
 }
 
+variable "policy" {
+  default     = "upsert-only"
+  description = "Policy for creating or updating records. Possible values: \"sync\" - allows for full synchronization of DNS records or \"upsert-only\" - allows everything but deleting DNS records."
+}
+
 # Helm
 
 variable "helm_chart_name" {
