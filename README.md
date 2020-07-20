@@ -36,6 +36,7 @@ A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 | helm\_chart\_version | n/a | `string` | `"3.2.3"` | no |
 | helm\_release\_name | n/a | `string` | `"external-dns"` | no |
 | helm\_repo\_url | n/a | `string` | `"https://charts.bitnami.com/bitnami"` | no |
+| k8s\_create\_namespace | Whether to create k8s namespace with name defined by `k8s_namespace` | `bool` | `true` | no |
 | k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
 | mod\_dependency | Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable | `any` | `null` | no |
