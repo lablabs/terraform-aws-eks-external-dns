@@ -66,7 +66,7 @@ variable "k8s_create_namespace" {
 
 variable "k8s_namespace" {
   type        = string
-  default     = "external-dns"
+  default     = "kube-system"
   description = "The k8s namespace in which the external-dns service account has been created"
 }
 

@@ -55,7 +55,7 @@ See [Basic example](examples/basic/README.md) for further information.
 | helm\_release\_name | Helm release name | `string` | `"external-dns"` | no |
 | helm\_repo\_url | Helm repository | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | k8s\_create\_namespace | Whether to create k8s namespace with name defined by `k8s_namespace` | `bool` | `true` | no |
-| k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"external-dns"` | no |
+| k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
 | mod\_dependency | Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable | `any` | `null` | no |
 | policy\_allowed\_zone\_ids | List of the Route53 zone ids for service account IAM role access | `list(string)` | <pre>[<br>  "*"<br>]</pre> | no |
