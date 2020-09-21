@@ -13,14 +13,32 @@ We help companies build, run, deploy and scale software and infrastructure by em
 
 A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 
+## Related Projects
+
+Check out these related projects.
+
+- [terraform-aws-eks-calico](https://github.com/lablabs/terraform-aws-eks-calico)
+- [terraform-aws-eks-cluster-autoscaler](https://github.com/lablabs/terraform-aws-eks-cluster-autoscaler)
+- [terraform-aws-eks-alb-ingress](https://github.com/lablabs/terraform-aws-eks-alb-ingress)
+- [terraform-aws-eks-metrics-server](https://github.com/lablabs/terraform-aws-eks-metrics-server)
+- [terraform-aws-eks-prometheus-node-exporter](https://github.com/lablabs/terraform-aws-eks-prometheus-node-exporter)
+- [terraform-aws-eks-kube-state-metrics](https://github.com/lablabs/terraform-aws-eks-kube-state-metrics)
+- [terraform-aws-eks-node-problem-detector](https://github.com/lablabs/terraform-aws-eks-node-problem-detector)
+
+
+## Examples
+
+See [Basic example](examples/basic/README.md) for further information.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.12.0 |
-| aws | ~> 2.0 |
-| helm | ~> 1.0 |
+| terraform | >= 0.12.26, < 0.14.0 |
+| aws | >= 2.0, < 4.0 |
+| helm | >= 1.0, < 1.4.0 |
+| kubernetes | >=1.10.0 |
 | local | ~> 1.2 |
 | null | ~> 2.0 |
 
@@ -28,21 +46,20 @@ A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| cluster\_identity\_oidc\_issuer | n/a | `any` | n/a | yes |
-| cluster\_identity\_oidc\_issuer\_arn | n/a | `any` | n/a | yes |
-| cluster\_name | n/a | `any` | n/a | yes |
-| enabled | n/a | `bool` | n/a | yes |
-| helm\_chart\_name | n/a | `string` | `"external-dns"` | no |
-| helm\_chart\_version | n/a | `string` | `"3.2.3"` | no |
-| helm\_release\_name | n/a | `string` | `"external-dns"` | no |
-| helm\_repo\_url | n/a | `string` | `"https://charts.bitnami.com/bitnami"` | no |
+| cluster\_identity\_oidc\_issuer | The OIDC Identity issuer for the cluster | `string` | n/a | yes |
+| cluster\_identity\_oidc\_issuer\_arn | The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account | `string` | n/a | yes |
+| cluster\_name | The name of the cluster | `string` | n/a | yes |
+| enabled | Variable indicating whether deployment is enabled | `bool` | `true` | no |
+| helm\_chart\_name | Helm chart name to be installed | `string` | `"external-dns"` | no |
+| helm\_chart\_version | Version of the Helm chart | `string` | `"3.4.1"` | no |
+| helm\_release\_name | Helm release name | `string` | `"external-dns"` | no |
+| helm\_repo\_url | Helm repository | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | k8s\_create\_namespace | Whether to create k8s namespace with name defined by `k8s_namespace` | `bool` | `true` | no |
-| k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"kube-system"` | no |
+| k8s\_namespace | The k8s namespace in which the external-dns service account has been created | `string` | `"external-dns"` | no |
 | k8s\_service\_account\_name | The k8s external-dns service account name | `string` | `"external-dns"` | no |
 | mod\_dependency | Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable | `any` | `null` | no |
-| policy | Policy for creating or updating records. Possible values: "sync" - allows for full synchronization of DNS records or "upsert-only" - allows everything but deleting DNS records. | `string` | `"upsert-only"` | no |
-| policy\_allowed\_zone\_ids | n/a | `list(string)` | <pre>[<br>  "*"<br>]</pre> | no |
-| zone\_tags\_filters | n/a | `list(string)` | <pre>[<br>  "external-dns=true"<br>]</pre> | no |
+| policy\_allowed\_zone\_ids | List of the Route53 zone ids for service account IAM role access | `list(string)` | <pre>[<br>  "*"<br>]</pre> | no |
+| settings | Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/bitnami/external-dns | `map(any)` | `{}` | no |
 
 ## Outputs
 
