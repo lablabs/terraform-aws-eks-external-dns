@@ -1,46 +1,59 @@
 # Required module inputs
 
-variable "cluster_name" {}
-variable "cluster_identity_oidc_issuer" {}
-variable "cluster_identity_oidc_issuer_arn" {}
+variable "cluster_name" {
+  type        = string
+  description = "The name of the cluster"
+}
+
+variable "cluster_identity_oidc_issuer" {
+  type        = string
+  description = "The OIDC Identity issuer for the cluster"
+}
+
+variable "cluster_identity_oidc_issuer_arn" {
+  type        = string
+  description = "The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account"
+}
 
 variable "policy_allowed_zone_ids" {
-  type    = list(string)
-  default = ["*"]
+  type        = list(string)
+  default     = ["*"]
+  description = "List of the Route53 zone ids for service account IAM role access"
 }
 
 # external-dns
 
 variable "enabled" {
-  type = bool
-}
+  type        = bool
+  default     = true
+  description = "Variable indicating whether deployment is enabled"
 
-variable "zone_tags_filters" {
-  type    = list(string)
-  default = ["external-dns=true"]
-}
-
-variable "policy" {
-  default     = "upsert-only"
-  description = "Policy for creating or updating records. Possible values: \"sync\" - allows for full synchronization of DNS records or \"upsert-only\" - allows everything but deleting DNS records."
 }
 
 # Helm
 
 variable "helm_chart_name" {
-  default = "external-dns"
+  type        = string
+  default     = "external-dns"
+  description = "Helm chart name to be installed"
 }
 
 variable "helm_chart_version" {
-  default = "3.2.3"
+  type        = string
+  default     = "3.4.1"
+  description = "Version of the Helm chart"
 }
 
 variable "helm_release_name" {
-  default = "external-dns"
+  type        = string
+  default     = "external-dns"
+  description = "Helm release name"
 }
 
 variable "helm_repo_url" {
-  default = "https://charts.bitnami.com/bitnami"
+  type        = string
+  default     = "https://charts.bitnami.com/bitnami"
+  description = "Helm repository"
 }
 
 # K8S
@@ -58,6 +71,7 @@ variable "k8s_namespace" {
 }
 
 variable "k8s_service_account_name" {
+  type        = string
   default     = "external-dns"
   description = "The k8s external-dns service account name"
 }
@@ -65,4 +79,10 @@ variable "k8s_service_account_name" {
 variable "mod_dependency" {
   default     = null
   description = "Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable"
+}
+
+variable "settings" {
+  type        = map(any)
+  default     = {}
+  description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/bitnami/external-dns"
 }
