@@ -42,7 +42,7 @@ jobs:
 
       - shell: bash
         name: "SETUP: Go path"
-        run: echo '::add-path::~/go/bin/'
+        run: echo '~/go/bin/' >> $GITHUB_PATH
 
       - uses: actions/checkout@v1
         name: Checkout source code
@@ -84,8 +84,7 @@ jobs:
 
       - shell: bash
         name: "SETUP: TFLint path"
-        run: |
-          echo '::add-path::~/tflint/bin/'
+        run: echo '~/tflint/bin/' >> $GITHUB_PATH
 
       - uses: pre-commit/action@v2.0.0
         name: "RUN: pre-commit"

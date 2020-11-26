@@ -85,6 +85,12 @@ module "extenral_dns" {
     # "extraEnv[2].valueFrom.secretKeyRef.name" = "existing-secret"
     # "extraEnv[2].valueFrom.secretKeyRef.key" = "varname3-key"
 
+    # domainFilters:
+    #   - foo.com
+    #   - bar.com
+    "domainFilters[0]" = "foo.com"
+    "domainFilters[1]" = "bar.com"
+
   }
 
 }
