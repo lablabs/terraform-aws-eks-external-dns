@@ -84,8 +84,7 @@ jobs:
 
       - shell: bash
         name: "SETUP: TFLint path"
-        run: |
-          echo '::add-path::~/tflint/bin/'
+        run: echo '~/go/bin/' >> $GITHUB_PATH
 
       - uses: pre-commit/action@v2.0.0
         name: "RUN: pre-commit"
