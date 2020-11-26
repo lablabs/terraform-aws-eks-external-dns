@@ -42,7 +42,7 @@ jobs:
 
       - shell: bash
         name: "SETUP: Go path"
-        run: echo '::add-path::~/go/bin/'
+        run: echo '~/go/bin/' >> $GITHUB_PATH
 
       - uses: actions/checkout@v1
         name: Checkout source code
