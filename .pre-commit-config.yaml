@@ -24,7 +24,7 @@ repos:
     - id: terraform_docs
       args:
         - '--args=--no-providers --sort-by-required'
-    - id: checkov
+#    - id: checkov
 
   - repo: git://github.com/pecigonzalo/pre-commit-terraform-vars
     rev: v1.0.0

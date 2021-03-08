@@ -9,6 +9,7 @@ on:
 env:
   TERRAFORM_DOCS_VERSION: "v0.11.2"
   TFLINT_VERSION: "v0.25.0"
+  TFSEC_VERSION: "v0.39.6"
 
 jobs:
   terraform-validation:
@@ -60,7 +61,7 @@ jobs:
 
       - uses: pat-s/always-upload-cache@v2
         id: cache-tflint
-        name: "CACHE: TFLint"
+        name: "CACHE: tflint"
         with:
           path: |
             ~/tflint/bin/
@@ -74,7 +75,7 @@ jobs:
           pip install detect-secrets
 
       - shell: bash
-        name: "INSTALL: TFLint"
+        name: "INSTALL: tflint"
         if: steps.cache-tflint.outputs.cache-hit != 'true'
         run: |
           wget https://github.com/terraform-linters/tflint/releases/download/${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
@@ -83,8 +84,33 @@ jobs:
           install tflint ~/tflint/bin/
 
       - shell: bash
-        name: "SETUP: TFLint path"
+        name: "SETUP: tflint path"
         run: echo '~/tflint/bin/' >> $GITHUB_PATH
+
+
+
+
+
+      - uses: pat-s/always-upload-cache@v2
+        id: cache-tfsec
+        name: "CACHE: tfsec"
+        with:
+          path: |
+            ~/tfsec/bin/
+          key: ${{ runner.os }}-tfsec-${{ env.TFSEC_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-tfsec-
+
+      - shell: bash
+        name: "INSTALL: tfsec"
+        if: steps.cache-tfsec.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/tfsec/bin/
+          wget -O ~/tfsec/bin/tfsec https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec_linux_amd64
+
+      - shell: bash
+        name: "SETUP: tfsec path"
+        run: echo '~/tfsec/bin/' >> $GITHUB_PATH
 
       - uses: pre-commit/action@v2.0.0
         name: "RUN: pre-commit"
