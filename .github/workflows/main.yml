@@ -98,7 +98,7 @@ jobs:
         name: "INSTALL: tfsec"
         if: steps.cache-tfsec.outputs.cache-hit != 'true'
         run: |
-          wget -O ~/tfsec/bin/tfsec https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
+          wget https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
           mkdir -p ~/tfsec/bin/
           install tfsec-linux-amd64 ~/tfsec/bin/
 
