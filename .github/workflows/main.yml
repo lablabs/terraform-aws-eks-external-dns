@@ -7,15 +7,15 @@ on:
     branches: [ master ]
 
 env:
-  TERRAFORM_DOCS_VERSION: "v0.9.1"
-  TFLINT_VERSION: "v0.16.2"
+  TERRAFORM_DOCS_VERSION: "v0.11.2"
+  TFLINT_VERSION: "v0.25.0"
 
 jobs:
   terraform-validation:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v2
         name: "SETUP: Python"
 
       - uses: actions/setup-go@v2
@@ -44,10 +44,10 @@ jobs:
         name: "SETUP: Go path"
         run: echo '~/go/bin/' >> $GITHUB_PATH
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         name: Checkout source code
 
-      - uses: pat-s/always-upload-cache@v2.0.0
+      - uses: pat-s/always-upload-cache@v2
         id: cache-pre-commit-dependencies
         name: "CACHE: pip and pre-commit dependencies"
         with:
@@ -58,7 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-pre-commit-
 
-      - uses: pat-s/always-upload-cache@v2.0.0
+      - uses: pat-s/always-upload-cache@v2
         id: cache-tflint
         name: "CACHE: TFLint"
         with:
