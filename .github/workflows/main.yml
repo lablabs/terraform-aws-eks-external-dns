@@ -36,6 +36,10 @@ jobs:
           mkdir -p ~/terraform-docs/bin/
           wget -O ~/terraform-docs/bin/terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64
 
+      - shell: bash
+        name: "SETUP: terraform-docs path"
+        run: echo '~/terraform-docs/bin/' >> $GITHUB_PATH
+
       - uses: actions/checkout@v2
         name: Checkout source code
 
