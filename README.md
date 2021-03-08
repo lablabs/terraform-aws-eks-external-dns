@@ -38,7 +38,7 @@ See [Basic example](examples/basic/README.md) for further information.
 | terraform | >= 0.13 |
 | aws | >= 2.0 |
 | helm | >= 1.0 |
-| kubernetes | >= 2.0 |
+| kubernetes | >= 1.10 |
 | local | >= 1.3 |
 | null | >= 2.0 |
 
