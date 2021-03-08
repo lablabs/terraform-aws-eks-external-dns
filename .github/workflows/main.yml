@@ -102,7 +102,7 @@ jobs:
         if: steps.cache-tfsec.outputs.cache-hit != 'true'
         run: |
           mkdir -p ~/tfsec/bin/
-          wget -O ~/tfsec/bin/tfsec https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec_linux_amd64
+          wget -O ~/tfsec/bin/tfsec https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
 
       - shell: bash
         name: "SETUP: tfsec path"
