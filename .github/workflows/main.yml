@@ -19,16 +19,12 @@ jobs:
       - uses: actions/setup-python@v2
         name: "SETUP: Python"
 
-      - uses: actions/setup-go@v2
-        name: "SETUP: Go"
-
       - uses: actions/cache@v2.0.0
         id: cache-terraform-docs
-        name: "CACHE: terraform-docs Go module"
+        name: "CACHE: terraform-docs"
         with:
           path: |
-            ~/go/pkg/mod
-            ~/go/bin/terraform-docs
+            ~/terraform-docs/bin/
           key: ${{ runner.os }}-terraform_docs-${{ env.TERRAFORM_DOCS_VERSION }}
           restore-keys: |
             ${{ runner.os}}-terraform_docs-
@@ -36,14 +32,9 @@ jobs:
       - shell: bash
         name: "INSTALL: terraform-docs"
         if: steps.cache-terraform-docs.output.cache-hit != 'true'
-        env:
-          GO111MODULE: "on"
         run: |
-          go get github.com/terraform-docs/terraform-docs@${{ env.TERRAFORM_DOCS_VERSION }}
-
-      - shell: bash
-        name: "SETUP: Go path"
-        run: echo '~/go/bin/' >> $GITHUB_PATH
+          mkdir -p ~/terraform-docs/bin/
+          wget -O ~/terraform-docs/bin/terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64
 
       - uses: actions/checkout@v2
         name: Checkout source code
