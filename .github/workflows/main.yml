@@ -39,7 +39,7 @@ jobs:
         env:
           GO111MODULE: "on"
         run: |
-          go get github.com/segmentio/terraform-docs@${{ env.TERRAFORM_DOCS_VERSION }}
+          go get github.com/terraform-docs/terraform-docs@${{ env.TERRAFORM_DOCS_VERSION }}
 
       - shell: bash
         name: "SETUP: Go path"
