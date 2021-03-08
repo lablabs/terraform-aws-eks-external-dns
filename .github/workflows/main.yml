@@ -33,8 +33,10 @@ jobs:
         name: "INSTALL: terraform-docs"
         if: steps.cache-terraform-docs.output.cache-hit != 'true'
         run: |
+          wget https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
+          tar xvzf terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
           mkdir -p ~/terraform-docs/bin/
-          wget -O ~/terraform-docs/bin/terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64
+          install terraform-docs ~/terraform-docs/bin/
 
       - shell: bash
         name: "SETUP: terraform-docs path"
@@ -96,8 +98,9 @@ jobs:
         name: "INSTALL: tfsec"
         if: steps.cache-tfsec.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ~/tfsec/bin/
           wget -O ~/tfsec/bin/tfsec https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
+          mkdir -p ~/tfsec/bin/
+          install tfsec-linux-amd64 ~/tfsec/bin/
 
       - shell: bash
         name: "SETUP: tfsec path"
