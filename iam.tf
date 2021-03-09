@@ -16,7 +16,7 @@ resource "kubernetes_namespace" "external_dns" {
 ### iam ###
 # Policy
 data "aws_iam_policy_document" "external_dns" {
-  count = var.enabled && ! local.assume_role ? 1 : 0
+  count = var.enabled && !local.assume_role ? 1 : 0
 
   statement {
     sid = "ChangeResourceRecordSets"

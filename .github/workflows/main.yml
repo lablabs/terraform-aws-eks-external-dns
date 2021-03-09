@@ -7,27 +7,24 @@ on:
     branches: [ master ]
 
 env:
-  TERRAFORM_DOCS_VERSION: "v0.9.1"
-  TFLINT_VERSION: "v0.16.2"
+  TERRAFORM_DOCS_VERSION: "v0.11.2"
+  TFLINT_VERSION: "v0.25.0"
+  TFSEC_VERSION: "v0.39.6"
 
 jobs:
   terraform-validation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v2
         name: "SETUP: Python"
 
-      - uses: actions/setup-go@v2
-        name: "SETUP: Go"
-
-      - uses: pat-s/always-upload-cache@v2.0.0
+      - uses: actions/cache@v2.0.0
         id: cache-terraform-docs
-        name: "CACHE: terraform-docs Go module"
+        name: "CACHE: terraform-docs"
         with:
           path: |
-            ~/go/pkg/mod
-            ~/go/bin/terraform-docs
+            ~/terraform-docs/bin/
           key: ${{ runner.os }}-terraform_docs-${{ env.TERRAFORM_DOCS_VERSION }}
           restore-keys: |
             ${{ runner.os}}-terraform_docs-
@@ -35,19 +32,20 @@ jobs:
       - shell: bash
         name: "INSTALL: terraform-docs"
         if: steps.cache-terraform-docs.output.cache-hit != 'true'
-        env:
-          GO111MODULE: "on"
         run: |
-          go get github.com/segmentio/terraform-docs@${{ env.TERRAFORM_DOCS_VERSION }}
+          wget https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
+          tar xvzf terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
+          mkdir -p ~/terraform-docs/bin/
+          install terraform-docs ~/terraform-docs/bin/
 
       - shell: bash
-        name: "SETUP: Go path"
-        run: echo '~/go/bin/' >> $GITHUB_PATH
+        name: "SETUP: terraform-docs path"
+        run: echo '~/terraform-docs/bin/' >> $GITHUB_PATH
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         name: Checkout source code
 
-      - uses: pat-s/always-upload-cache@v2.0.0
+      - uses: actions/cache@v2
         id: cache-pre-commit-dependencies
         name: "CACHE: pip and pre-commit dependencies"
         with:
@@ -58,9 +56,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-pre-commit-
 
-      - uses: pat-s/always-upload-cache@v2.0.0
+      - uses: actions/cache@v2
         id: cache-tflint
-        name: "CACHE: TFLint"
+        name: "CACHE: tflint"
         with:
           path: |
             ~/tflint/bin/
@@ -74,7 +72,7 @@ jobs:
           pip install detect-secrets
 
       - shell: bash
-        name: "INSTALL: TFLint"
+        name: "INSTALL: tflint"
         if: steps.cache-tflint.outputs.cache-hit != 'true'
         run: |
           wget https://github.com/terraform-linters/tflint/releases/download/${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
@@ -83,8 +81,30 @@ jobs:
           install tflint ~/tflint/bin/
 
       - shell: bash
-        name: "SETUP: TFLint path"
+        name: "SETUP: tflint path"
         run: echo '~/tflint/bin/' >> $GITHUB_PATH
+
+      - uses: actions/cache@v2
+        id: cache-tfsec
+        name: "CACHE: tfsec"
+        with:
+          path: |
+            ~/tfsec/bin/
+          key: ${{ runner.os }}-tfsec-${{ env.TFSEC_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-tfsec-
+
+      - shell: bash
+        name: "INSTALL: tfsec"
+        if: steps.cache-tfsec.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/tfsec/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
+          mkdir -p ~/tfsec/bin/
+          install tfsec-linux-amd64 ~/tfsec/bin/
+
+      - shell: bash
+        name: "SETUP: tfsec path"
+        run: echo '~/tfsec/bin/' >> $GITHUB_PATH
 
       - uses: pre-commit/action@v2.0.0
         name: "RUN: pre-commit"
