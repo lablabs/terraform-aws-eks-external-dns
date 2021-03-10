@@ -67,7 +67,7 @@ No Modules.
 | cluster\_name | The name of the cluster | `string` | n/a | yes |
 | enabled | Variable indicating whether deployment is enabled | `bool` | `true` | no |
 | helm\_chart\_name | Helm chart name to be installed | `string` | `"external-dns"` | no |
-| helm\_chart\_version | Version of the Helm chart | `string` | `"3.4.1"` | no |
+| helm\_chart\_version | Version of the Helm chart | `string` | `"4.9.0"` | no |
 | helm\_release\_name | Helm release name | `string` | `"external-dns"` | no |
 | helm\_repo\_url | Helm repository | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | k8s\_create\_namespace | Whether to create k8s namespace with name defined by `k8s_namespace` | `bool` | `true` | no |
