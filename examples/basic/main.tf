@@ -52,8 +52,8 @@ module "extenral_dns" {
     ## - service
     ## - ingress
 
-    "source[0]" = "service"
-    "source[1]" = "ingress"
+    "sources[0]" = "service"
+    "sources[1]" = "ingress"
 
     ## coredns:
     ##   etcdTLS:
