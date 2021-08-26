@@ -10,17 +10,9 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 1.0"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 2.0"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = ">= 1.3"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 1.10"
+    utils = {
+      source  = "cloudposse/utils"
+      version = ">= 0.12.0"
     }
   }
 }

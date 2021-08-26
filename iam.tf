@@ -5,8 +5,7 @@ locals {
 }
 
 resource "kubernetes_namespace" "external_dns" {
-  depends_on = [var.mod_dependency]
-  count      = (var.enabled && var.k8s_create_namespace && var.k8s_namespace != "kube-system") ? 1 : 0
+  count = (var.enabled && var.k8s_create_namespace && var.k8s_namespace != "kube-system") ? 1 : 0
 
   metadata {
     name = var.k8s_namespace
@@ -74,8 +73,6 @@ resource "aws_iam_policy" "external_dns" {
   description = "Policy for external-dns service"
 
   policy = local.assume_role ? data.aws_iam_policy_document.external_dns_assume[0].json : data.aws_iam_policy_document.external_dns[0].json
-
-  depends_on = [var.mod_dependency]
 }
 
 # Role
@@ -108,8 +105,6 @@ resource "aws_iam_role" "external_dns" {
 
   name               = "${var.cluster_name}-external-dns"
   assume_role_policy = data.aws_iam_policy_document.external_dns_irsa[0].json
-
-  depends_on = [var.mod_dependency]
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
@@ -118,5 +113,4 @@ resource "aws_iam_role_policy_attachment" "external_dns" {
   role       = aws_iam_role.external_dns[0].name
   policy_arn = aws_iam_policy.external_dns[0].arn
 
-  depends_on = [var.mod_dependency]
 }

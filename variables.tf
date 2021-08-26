@@ -40,7 +40,7 @@ variable "helm_chart_name" {
 
 variable "helm_chart_version" {
   type        = string
-  default     = "4.9.0"
+  default     = "5.4.4"
   description = "Version of the Helm chart"
 }
 
@@ -76,13 +76,14 @@ variable "k8s_service_account_name" {
   description = "The k8s external-dns service account name"
 }
 
-variable "mod_dependency" {
-  default     = null
-  description = "Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable"
-}
-
 variable "settings" {
   type        = map(any)
   default     = {}
   description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/bitnami/external-dns"
+}
+
+variable "values" {
+  type        = string
+  default     = ""
+  description = "Additional values for helm chart. Values will be merged, in order, as Helm does with multiple -f options"
 }
