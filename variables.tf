@@ -50,7 +50,7 @@ variable "helm_create_namespace" {
 
 variable "k8s_namespace" {
   type        = string
-  default     = "external-dns"
+  default     = "kube-system"
   description = "The K8s namespace in which the node-problem-detector service account has been created"
 }
 
@@ -80,13 +80,13 @@ variable "k8s_service_account_name" {
 variable "settings" {
   type        = map(any)
   default     = {}
-  description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/stable/external-dns"
+  description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/bitnami/external-dns"
 }
 
 variable "values" {
   type        = string
   default     = ""
-  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/stable/external-dns"
+  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/bitnami/external-dns"
 }
 
 variable "policy_allowed_zone_ids" {
