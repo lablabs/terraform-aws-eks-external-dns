@@ -4,14 +4,6 @@ locals {
   assume_role = length(try(var.settings["aws.assumeRoleArn"], "")) > 0 ? true : false
 }
 
-resource "kubernetes_namespace" "external_dns" {
-  count = (var.enabled && var.k8s_create_namespace && var.k8s_namespace != "kube-system") ? 1 : 0
-
-  metadata {
-    name = var.k8s_namespace
-  }
-}
-
 ### iam ###
 # Policy
 data "aws_iam_policy_document" "external_dns" {
