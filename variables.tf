@@ -45,13 +45,13 @@ variable "helm_repo_url" {
 variable "helm_create_namespace" {
   type        = bool
   default     = true
-  description = "Create the namespace if it does not yet exist"
+  description = "Whether to create k8s namespace with name defined by `k8s_namespace"
 }
 
 variable "k8s_namespace" {
   type        = string
   default     = "kube-system"
-  description = "The K8s namespace in which the node-problem-detector service account has been created"
+  description = "The K8s namespace in which the external-dns will be installed"
 }
 
 variable "k8s_rbac_create" {
