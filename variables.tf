@@ -50,7 +50,7 @@ variable "helm_create_namespace" {
 
 variable "k8s_namespace" {
   type        = string
-  default     = "cluster-autoscaler"
+  default     = "external-dns"
   description = "The K8s namespace in which the node-problem-detector service account has been created"
 }
 
@@ -73,20 +73,20 @@ variable "k8s_irsa_role_create" {
 }
 
 variable "k8s_service_account_name" {
-  default     = "cluster-autoscaler"
-  description = "The k8s cluster-autoscaler service account name"
+  default     = "external-dns"
+  description = "The k8s external-dns service account name"
 }
 
 variable "settings" {
   type        = map(any)
   default     = {}
-  description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/stable/cluster-autoscaler"
+  description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/stable/external-dns"
 }
 
 variable "values" {
   type        = string
   default     = ""
-  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/stable/cluster-autoscaler"
+  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/stable/external-dns"
 }
 
 variable "policy_allowed_zone_ids" {
