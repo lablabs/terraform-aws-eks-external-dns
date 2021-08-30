@@ -45,7 +45,7 @@ variable "helm_repo_url" {
 variable "helm_create_namespace" {
   type        = bool
   default     = true
-  description = "Whether to create k8s namespace with name defined by `k8s_namespace"
+  description = "Whether to create k8s namespace with name defined by `k8s_namespace`"
 }
 
 variable "k8s_namespace" {
