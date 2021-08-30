@@ -1,4 +1,8 @@
-# Required module inputs
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Variable indicating whether deployment is enabled"
+}
 
 variable "cluster_name" {
   type        = string
@@ -15,23 +19,6 @@ variable "cluster_identity_oidc_issuer_arn" {
   description = "The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account"
 }
 
-variable "policy_allowed_zone_ids" {
-  type        = list(string)
-  default     = ["*"]
-  description = "List of the Route53 zone ids for service account IAM role access"
-}
-
-# external-dns
-
-variable "enabled" {
-  type        = bool
-  default     = true
-  description = "Variable indicating whether deployment is enabled"
-
-}
-
-# Helm
-
 variable "helm_chart_name" {
   type        = string
   default     = "external-dns"
@@ -40,7 +27,7 @@ variable "helm_chart_name" {
 
 variable "helm_chart_version" {
   type        = string
-  default     = "4.9.0"
+  default     = "5.4.4"
   description = "Version of the Helm chart"
 }
 
@@ -49,16 +36,13 @@ variable "helm_release_name" {
   default     = "external-dns"
   description = "Helm release name"
 }
-
 variable "helm_repo_url" {
   type        = string
   default     = "https://charts.bitnami.com/bitnami"
   description = "Helm repository"
 }
 
-# K8S
-
-variable "k8s_create_namespace" {
+variable "helm_create_namespace" {
   type        = bool
   default     = true
   description = "Whether to create k8s namespace with name defined by `k8s_namespace`"
@@ -67,22 +51,51 @@ variable "k8s_create_namespace" {
 variable "k8s_namespace" {
   type        = string
   default     = "kube-system"
-  description = "The k8s namespace in which the external-dns service account has been created"
+  description = "The K8s namespace in which the external-dns will be installed"
+}
+
+variable "k8s_rbac_create" {
+  type        = bool
+  default     = true
+  description = "Whether to create and use RBAC resources"
+}
+
+variable "k8s_service_account_create" {
+  type        = bool
+  default     = true
+  description = "Whether to create Service Account"
+}
+
+variable "k8s_irsa_role_create" {
+  type        = bool
+  default     = true
+  description = "Whether to create IRSA role and annotate service account"
+}
+
+variable "k8s_assume_role_arn" {
+  default     = ""
+  description = "Whether to create and use default role or assume existing role. Useful for hosted zones in another AWS account. Default (empty string) use default role."
 }
 
 variable "k8s_service_account_name" {
-  type        = string
   default     = "external-dns"
   description = "The k8s external-dns service account name"
-}
-
-variable "mod_dependency" {
-  default     = null
-  description = "Dependence variable binds all AWS resources allocated by this module, dependent modules reference this variable"
 }
 
 variable "settings" {
   type        = map(any)
   default     = {}
   description = "Additional settings which will be passed to the Helm chart values, see https://hub.helm.sh/charts/bitnami/external-dns"
+}
+
+variable "values" {
+  type        = string
+  default     = ""
+  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/bitnami/external-dns"
+}
+
+variable "policy_allowed_zone_ids" {
+  type        = list(string)
+  default     = ["*"]
+  description = "List of the Route53 zone ids for service account IAM role access"
 }

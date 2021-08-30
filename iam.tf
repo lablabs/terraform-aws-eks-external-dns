@@ -1,22 +1,9 @@
-# aws.assumeRoleArn
-
 locals {
-  assume_role = length(try(var.settings["aws.assumeRoleArn"], "")) > 0 ? true : false
+  assume_role = length(var.k8s_assume_role_arn) > 0 ? true : false
 }
 
-resource "kubernetes_namespace" "external_dns" {
-  depends_on = [var.mod_dependency]
-  count      = (var.enabled && var.k8s_create_namespace && var.k8s_namespace != "kube-system") ? 1 : 0
-
-  metadata {
-    name = var.k8s_namespace
-  }
-}
-
-### iam ###
-# Policy
 data "aws_iam_policy_document" "external_dns" {
-  count = var.enabled && !local.assume_role ? 1 : 0
+  count = local.k8s_irsa_role_create && !local.assume_role ? 1 : 0
 
   statement {
     sid = "ChangeResourceRecordSets"
@@ -48,7 +35,7 @@ data "aws_iam_policy_document" "external_dns" {
 }
 
 data "aws_iam_policy_document" "external_dns_assume" {
-  count = var.enabled && local.assume_role ? 1 : 0
+  count = local.k8s_irsa_role_create && local.assume_role ? 1 : 0
 
   statement {
     sid = "AllowAssumeExternalDNSRole"
@@ -60,27 +47,23 @@ data "aws_iam_policy_document" "external_dns_assume" {
     ]
 
     resources = [
-      var.settings["aws.assumeRoleArn"]
+      var.k8s_assume_role_arn
     ]
   }
 }
 
-
 resource "aws_iam_policy" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   name        = "${var.cluster_name}-external-dns"
   path        = "/"
   description = "Policy for external-dns service"
 
   policy = local.assume_role ? data.aws_iam_policy_document.external_dns_assume[0].json : data.aws_iam_policy_document.external_dns[0].json
-
-  depends_on = [var.mod_dependency]
 }
 
-# Role
 data "aws_iam_policy_document" "external_dns_irsa" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -104,19 +87,16 @@ data "aws_iam_policy_document" "external_dns_irsa" {
 }
 
 resource "aws_iam_role" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   name               = "${var.cluster_name}-external-dns"
   assume_role_policy = data.aws_iam_policy_document.external_dns_irsa[0].json
-
-  depends_on = [var.mod_dependency]
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   role       = aws_iam_role.external_dns[0].name
   policy_arn = aws_iam_policy.external_dns[0].arn
 
-  depends_on = [var.mod_dependency]
 }
