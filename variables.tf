@@ -72,6 +72,11 @@ variable "k8s_irsa_role_create" {
   description = "Whether to create IRSA role and annotate service account"
 }
 
+variable "k8s_assume_role_arn" {
+  default     = ""
+  description = "Whether to create and use default role or assume existing role. Useful for hosted zones in another AWS account. Default (empty string) use default role."
+}
+
 variable "k8s_service_account_name" {
   default     = "external-dns"
   description = "The k8s external-dns service account name"

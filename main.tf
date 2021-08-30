@@ -4,6 +4,7 @@ locals {
   values = yamlencode({
     "aws" : {
       "region" : data.aws_region.current.name
+      "assumeRoleArn" : var.k8s_assume_role_arn
     }
     "rbac" : {
       "create" : var.k8s_rbac_create

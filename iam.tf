@@ -1,5 +1,5 @@
 locals {
-  assume_role = length(try(var.settings["aws.assumeRoleArn"], "")) > 0 ? true : false
+  assume_role = length(var.k8s_assume_role_arn) > 0 ? true : false
 }
 
 data "aws_iam_policy_document" "external_dns" {
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "external_dns_assume" {
     ]
 
     resources = [
-      var.settings["aws.assumeRoleArn"]
+      var.k8s_assume_role_arn
     ]
   }
 }
