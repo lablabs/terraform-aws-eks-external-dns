@@ -1,20 +1,24 @@
 locals {
+  k8s_irsa_role_create = var.enabled && var.k8s_rbac_create && var.k8s_service_account_create && var.k8s_irsa_role_create
+
   values = yamlencode({
     "aws" : {
       "region" : data.aws_region.current.name
     }
     "rbac" : {
-      "create" : true
+      "create" : var.k8s_rbac_create
     }
     "serviceAccount" : {
-      "create" : true
+      "create" : var.k8s_service_account_create
       "name" : var.k8s_service_account_name
       "annotations" : {
-        "eks.amazonaws.com/role-arn" : aws_iam_role.external_dns[0].arn
+        "eks.amazonaws.com/role-arn" : local.k8s_irsa_role_create ? aws_iam_role.external_dns[0].arn : ""
       }
     }
   })
 }
+
+data "aws_region" "current" {}
 
 data "utils_deep_merge_yaml" "values" {
   count = var.enabled ? 1 : 0
@@ -24,12 +28,10 @@ data "utils_deep_merge_yaml" "values" {
   ])
 }
 
-data "aws_region" "current" {}
-
 resource "helm_release" "external_dns" {
   count            = var.enabled ? 1 : 0
   chart            = var.helm_chart_name
-  create_namespace = var.k8s_create_namespace
+  create_namespace = var.helm_create_namespace
   namespace        = var.k8s_namespace
   name             = var.helm_release_name
   version          = var.helm_chart_version

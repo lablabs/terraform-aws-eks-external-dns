@@ -1,13 +1,9 @@
-# aws.assumeRoleArn
-
 locals {
   assume_role = length(try(var.settings["aws.assumeRoleArn"], "")) > 0 ? true : false
 }
 
-### iam ###
-# Policy
 data "aws_iam_policy_document" "external_dns" {
-  count = var.enabled && !local.assume_role ? 1 : 0
+  count = local.k8s_irsa_role_create && !local.assume_role ? 1 : 0
 
   statement {
     sid = "ChangeResourceRecordSets"
@@ -39,7 +35,7 @@ data "aws_iam_policy_document" "external_dns" {
 }
 
 data "aws_iam_policy_document" "external_dns_assume" {
-  count = var.enabled && local.assume_role ? 1 : 0
+  count = local.k8s_irsa_role_create && local.assume_role ? 1 : 0
 
   statement {
     sid = "AllowAssumeExternalDNSRole"
@@ -56,9 +52,8 @@ data "aws_iam_policy_document" "external_dns_assume" {
   }
 }
 
-
 resource "aws_iam_policy" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   name        = "${var.cluster_name}-external-dns"
   path        = "/"
@@ -67,9 +62,8 @@ resource "aws_iam_policy" "external_dns" {
   policy = local.assume_role ? data.aws_iam_policy_document.external_dns_assume[0].json : data.aws_iam_policy_document.external_dns[0].json
 }
 
-# Role
 data "aws_iam_policy_document" "external_dns_irsa" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -93,14 +87,14 @@ data "aws_iam_policy_document" "external_dns_irsa" {
 }
 
 resource "aws_iam_role" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   name               = "${var.cluster_name}-external-dns"
   assume_role_policy = data.aws_iam_policy_document.external_dns_irsa[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
-  count = var.enabled ? 1 : 0
+  count = local.k8s_irsa_role_create ? 1 : 0
 
   role       = aws_iam_role.external_dns[0].name
   policy_arn = aws_iam_policy.external_dns[0].arn
