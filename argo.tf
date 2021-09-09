@@ -1,5 +1,5 @@
 resource "kubernetes_manifest" "this" {
-  count = var.argocd_application ? 1 : 0
+  count = var.argo_application_enabled ? 1 : 0
   manifest = {
     "apiVersion" = "argoproj.io/v1alpha1"
     "kind"       = "Application"
