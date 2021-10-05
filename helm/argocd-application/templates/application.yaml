@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ include "argocd_application.fullname" . }}
+  labels:
+    {{- include "argocd_application.labels" . | nindent 4 }}
+spec:
+  project: {{ .Values.project }}
+  {{ with .Values.source }}
+  source:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{ with .Values.destination }}
+  destination:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{ with .Values.syncPolicy }}
+  syncPolicy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{ with .Values.info }}
+  info:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
