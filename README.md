@@ -90,6 +90,7 @@ No modules.
 | <a name="input_helm_repo_url"></a> [helm\_repo\_url](#input\_helm\_repo\_url) | Helm repository | `string` | `"https://charts.bitnami.com/bitnami"` | no |
 | <a name="input_k8s_assume_role_arn"></a> [k8s\_assume\_role\_arn](#input\_k8s\_assume\_role\_arn) | Whether to create and use default role or assume existing role. Useful for hosted zones in another AWS account. Default (empty string) use default role. | `string` | `""` | no |
 | <a name="input_k8s_irsa_role_create"></a> [k8s\_irsa\_role\_create](#input\_k8s\_irsa\_role\_create) | Whether to create IRSA role and annotate service account | `bool` | `true` | no |
+| <a name="input_k8s_irsa_role_name_prefix"></a> [k8s\_irsa\_role\_name\_prefix](#input\_k8s\_irsa\_role\_name\_prefix) | The IRSA role name prefix for prometheus | `string` | `"external-dns-irsa"` | no |
 | <a name="input_k8s_namespace"></a> [k8s\_namespace](#input\_k8s\_namespace) | The K8s namespace in which the external-dns will be installed | `string` | `"kube-system"` | no |
 | <a name="input_k8s_rbac_create"></a> [k8s\_rbac\_create](#input\_k8s\_rbac\_create) | Whether to create and use RBAC resources | `bool` | `true` | no |
 | <a name="input_k8s_service_account_create"></a> [k8s\_service\_account\_create](#input\_k8s\_service\_account\_create) | Whether to create Service Account | `bool` | `true` | no |

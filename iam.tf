@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "external_dns_assume" {
 resource "aws_iam_policy" "external_dns" {
   count = local.k8s_irsa_role_create ? 1 : 0
 
-  name        = "${var.cluster_name}-external-dns"
+  name        = "${var.k8s_irsa_role_name_prefix}-${var.helm_chart_name}"
   path        = "/"
   description = "Policy for external-dns service"
 
@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "external_dns_irsa" {
 resource "aws_iam_role" "external_dns" {
   count = local.k8s_irsa_role_create ? 1 : 0
 
-  name               = "${var.cluster_name}-external-dns"
+  name               = "${var.k8s_irsa_role_name_prefix}-${var.helm_chart_name}"
   assume_role_policy = data.aws_iam_policy_document.external_dns_irsa[0].json
 }
 
