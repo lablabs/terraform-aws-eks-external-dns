@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "this_assume" {
 resource "aws_iam_policy" "this" {
   count = local.k8s_irsa_role_create && (var.k8s_irsa_policy_enabled || var.k8s_assume_role_enabled) ? 1 : 0
 
-  name        = "${var.k8s_irsa_role_name_prefix}-${var.helm_chart_name}"
+  name        = "${var.k8s_irsa_role_name_prefix}-${var.helm_release_name}"
   path        = "/"
   description = "Policy for external-dns service"
   policy      = var.k8s_assume_role_enabled ? data.aws_iam_policy_document.this_assume[0].json : data.aws_iam_policy_document.this[0].json
@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "this_irsa" {
 resource "aws_iam_role" "this" {
   count = local.k8s_irsa_role_create ? 1 : 0
 
-  name               = "${var.k8s_irsa_role_name_prefix}-${var.helm_chart_name}"
+  name               = "${var.k8s_irsa_role_name_prefix}-${var.helm_release_name}"
   assume_role_policy = data.aws_iam_policy_document.this_irsa[0].json
 
   tags = var.tags
