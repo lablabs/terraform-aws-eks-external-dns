@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
       - id: trailing-whitespace
       - id: check-merge-conflict
@@ -9,18 +9,13 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
 
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.12
-    hooks:
-      - id: tflint
-      - id: terraform-validate
-
   - repo: git://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.47.0
+    rev: v1.60.0
     hooks:
     - id: terraform_fmt
     - id: terraform_tflint
-#    - id: terraform_tfsec
+    - id: terraform_validate
+    - id: checkov
     - id: terraform_docs
       args:
         - '--args=--hide providers --sort-by required'
@@ -31,7 +26,7 @@ repos:
     - id: terraform-vars
 
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v0.14.3
+    rev: v1.1.0
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
