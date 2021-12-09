@@ -4,11 +4,6 @@ variable "enabled" {
   description = "Variable indicating whether deployment is enabled"
 }
 
-variable "cluster_name" {
-  type        = string
-  description = "The name of the cluster"
-}
-
 variable "cluster_identity_oidc_issuer" {
   type        = string
   description = "The OIDC Identity issuer for the cluster"
@@ -66,20 +61,50 @@ variable "k8s_service_account_create" {
   description = "Whether to create Service Account"
 }
 
+variable "k8s_service_account_name" {
+  default     = "external-dns"
+  description = "The k8s external-dns service account name"
+}
+
 variable "k8s_irsa_role_create" {
   type        = bool
   default     = true
   description = "Whether to create IRSA role and annotate service account"
 }
 
-variable "k8s_assume_role_arn" {
-  default     = ""
-  description = "Whether to create and use default role or assume existing role. Useful for hosted zones in another AWS account. Default (empty string) use default role."
+variable "k8s_irsa_role_name_prefix" {
+  type        = string
+  default     = "external-dns-irsa"
+  description = "The IRSA role name prefix for prometheus"
 }
 
-variable "k8s_service_account_name" {
-  default     = "external-dns"
-  description = "The k8s external-dns service account name"
+variable "k8s_assume_role_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether IRSA is allowed to assume role defined by k8s_assume_role_arn. Useful for hosted zones in another AWS account."
+}
+
+variable "k8s_assume_role_arn" {
+  default     = ""
+  description = "Assume role arn. Assume role must be enabled."
+}
+
+variable "k8s_irsa_additional_policies" {
+  type        = map(string)
+  default     = {}
+  description = "Map of the additional policies to be attached to default role. Where key is arbiraty id and value is policy arn."
+}
+
+variable "k8s_irsa_policy_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to create opinionated policy to allow operations on specified zones in `policy_allowed_zone_ids`."
+}
+
+variable "policy_allowed_zone_ids" {
+  type        = list(string)
+  default     = ["*"]
+  description = "List of the Route53 zone ids for service account IAM role access"
 }
 
 variable "settings" {
@@ -92,12 +117,6 @@ variable "values" {
   type        = string
   default     = ""
   description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/bitnami/external-dns"
-}
-
-variable "policy_allowed_zone_ids" {
-  type        = list(string)
-  default     = ["*"]
-  description = "List of the Route53 zone ids for service account IAM role access"
 }
 
 variable "argo_namespace" {
@@ -147,4 +166,10 @@ variable "argo_info" {
 variable "argo_sync_policy" {
   description = "ArgoCD syncPolicy manifest parameter"
   default     = {}
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "AWS resources tags"
 }
