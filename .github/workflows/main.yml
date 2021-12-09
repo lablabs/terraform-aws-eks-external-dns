@@ -72,6 +72,11 @@ jobs:
           pip install detect-secrets
 
       - shell: bash
+        name: "INSTALL: checkov"
+        run: |
+          pip install checkov
+
+      - shell: bash
         name: "INSTALL: tflint"
         if: steps.cache-tflint.outputs.cache-hit != 'true'
         run: |

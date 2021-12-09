@@ -8,7 +8,7 @@ locals {
       "helm" : {
         "releaseName" : var.helm_release_name
         "parameters" : [for k, v in var.settings : tomap({ "forceString" : true, "name" : k, "value" : v })]
-        "values" : data.utils_deep_merge_yaml.values[0].output
+        "values" : var.enabled ? data.utils_deep_merge_yaml.values[0].output : ""
       }
     }
     "destination" : {
@@ -41,7 +41,7 @@ resource "helm_release" "argocd_application" {
 }
 
 
-resource "kubernetes_manifest" "self" {
+resource "kubernetes_manifest" "this" {
   count = var.enabled && var.argo_application_enabled && !var.argo_application_use_helm ? 1 : 0
   manifest = {
     "apiVersion" = "argoproj.io/v1alpha1"
