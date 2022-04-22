@@ -7,9 +7,9 @@ on:
     branches: [ master ]
 
 env:
-  TERRAFORM_DOCS_VERSION: "v0.15.0"
-  TFLINT_VERSION: "v0.25.0"
-  TFSEC_VERSION: "v0.39.6"
+  TERRAFORM_DOCS_VERSION: "v0.16.0"
+  TFLINT_VERSION: "v0.35.0"
+  TFSEC_VERSION: "v1.6.2"
 
 jobs:
   terraform-validation:
@@ -88,6 +88,10 @@ jobs:
       - shell: bash
         name: "SETUP: tflint path"
         run: echo '~/tflint/bin/' >> $GITHUB_PATH
+
+      - shell: bash
+        name: "INIT: TFLint"
+        run: tflint --init
 
       - uses: actions/cache@v2
         id: cache-tfsec
