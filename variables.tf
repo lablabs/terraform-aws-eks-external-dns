@@ -194,7 +194,7 @@ variable "argo_kubernetes_manifest_field_manager_force_conflicts" {
   description = "Forcibly override any field manager conflicts when applying the kubernetes manifest resource"
 }
 
-variable "argo_kubernetes_manifest_wait_for_fields" {
+variable "argo_kubernetes_manifest_wait_fields" {
   type        = map(string)
   default     = {}
   description = "A map of fields and a corresponding regular expression with a pattern to wait for. The provider will wait until the field matches the regular expression. Use * for any value."
