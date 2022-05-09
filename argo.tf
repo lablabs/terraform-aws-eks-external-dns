@@ -1,4 +1,9 @@
 locals {
+  argo_application_metadata = {
+    "labels" : try(var.argo_metadata.labels, {}),
+    "annotations" : try(var.argo_metadata.annotations, {}),
+    "finalizers" : try(var.argo_metadata.finalizers, [])
+  }
   argo_application_values = {
     "project" : var.argo_project
     "source" : {
@@ -12,44 +17,69 @@ locals {
       }
     }
     "destination" : {
-      "server" : var.argo_destionation_server
-      "namespace" : var.k8s_namespace
+      "server" : var.argo_destination_server
+      "namespace" : var.namespace
     }
     "syncPolicy" : var.argo_sync_policy
     "info" : var.argo_info
   }
 }
 
-data "utils_deep_merge_yaml" "argo_application_values" {
-  count = var.enabled && var.argo_application_enabled && var.argo_application_use_helm ? 1 : 0
+data "utils_deep_merge_yaml" "argo_helm_values" {
+  count = var.enabled && var.argo_enabled && var.argo_helm_enabled ? 1 : 0
   input = compact([
-    yamlencode(local.argo_application_values),
-    var.argo_application_values
+    yamlencode({
+      "apiVersion" : var.argo_apiversion
+    }),
+    yamlencode({
+      "spec" : local.argo_application_values
+    }),
+    yamlencode({
+      "spec" : var.argo_spec
+    }),
+    yamlencode(
+      local.argo_application_metadata
+    )
   ])
 }
 
 resource "helm_release" "argocd_application" {
-  count = var.enabled && var.argo_application_enabled && var.argo_application_use_helm ? 1 : 0
+  count = var.enabled && var.argo_enabled && var.argo_helm_enabled ? 1 : 0
 
   chart     = "${path.module}/helm/argocd-application"
   name      = var.helm_release_name
   namespace = var.argo_namespace
 
   values = [
-    data.utils_deep_merge_yaml.argo_application_values[0].output
+    data.utils_deep_merge_yaml.argo_helm_values[0].output,
+    var.argo_helm_values
   ]
 }
 
-
 resource "kubernetes_manifest" "this" {
-  count = var.enabled && var.argo_application_enabled && !var.argo_application_use_helm ? 1 : 0
+  count = var.enabled && var.argo_enabled && !var.argo_helm_enabled ? 1 : 0
   manifest = {
-    "apiVersion" = "argoproj.io/v1alpha1"
+    "apiVersion" = var.argo_apiversion
     "kind"       = "Application"
-    "metadata" = {
-      "name"      = var.helm_release_name
-      "namespace" = var.argo_namespace
-    }
-    "spec" = local.argo_application_values
+    "metadata" = merge(
+      local.argo_application_metadata,
+      { "name" = var.helm_release_name },
+      { "namespace" = var.argo_namespace },
+    )
+    "spec" = merge(
+      local.argo_application_values,
+      var.argo_spec
+    )
+  }
+
+  computed_fields = var.argo_kubernetes_manifest_computed_fields
+
+  field_manager {
+    name            = var.argo_kubernetes_manifest_field_manager_name
+    force_conflicts = var.argo_kubernetes_manifest_field_manager_force_conflicts
+  }
+
+  wait {
+    fields = var.argo_kubernetes_manifest_wait_fields
   }
 }

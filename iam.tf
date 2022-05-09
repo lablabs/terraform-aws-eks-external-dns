@@ -1,9 +1,9 @@
 locals {
-  k8s_irsa_role_create = var.enabled && var.k8s_rbac_create && var.k8s_service_account_create && var.k8s_irsa_role_create
+  irsa_role_create = var.enabled && var.rbac_create && var.service_account_create && var.irsa_role_create
 }
 
 data "aws_iam_policy_document" "this" {
-  count = local.k8s_irsa_role_create && var.k8s_irsa_policy_enabled && !var.k8s_assume_role_enabled ? 1 : 0
+  count = local.irsa_role_create && var.irsa_policy_enabled && !var.irsa_assume_role_enabled ? 1 : 0
 
   statement {
     sid    = "ChangeResourceRecordSets"
@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 data "aws_iam_policy_document" "this_assume" {
-  count = local.k8s_irsa_role_create && var.k8s_assume_role_enabled ? 1 : 0
+  count = local.irsa_role_create && var.irsa_assume_role_enabled ? 1 : 0
 
   statement {
     sid    = "AllowAssumeExternalDNSRole"
@@ -41,24 +41,24 @@ data "aws_iam_policy_document" "this_assume" {
       "sts:AssumeRole"
     ]
     resources = [
-      var.k8s_assume_role_arn
+      var.irsa_assume_role_arn
     ]
   }
 }
 
 resource "aws_iam_policy" "this" {
-  count = local.k8s_irsa_role_create && (var.k8s_irsa_policy_enabled || var.k8s_assume_role_enabled) ? 1 : 0
+  count = local.irsa_role_create && (var.irsa_policy_enabled || var.irsa_assume_role_enabled) ? 1 : 0
 
-  name        = "${var.k8s_irsa_role_name_prefix}-${var.helm_release_name}"
+  name        = "${var.irsa_role_name_prefix}-${var.helm_release_name}"
   path        = "/"
   description = "Policy for external-dns service"
-  policy      = var.k8s_assume_role_enabled ? data.aws_iam_policy_document.this_assume[0].json : data.aws_iam_policy_document.this[0].json
+  policy      = var.irsa_assume_role_enabled ? data.aws_iam_policy_document.this_assume[0].json : data.aws_iam_policy_document.this[0].json
 
-  tags = var.tags
+  tags = var.irsa_tags
 }
 
 data "aws_iam_policy_document" "this_irsa" {
-  count = local.k8s_irsa_role_create ? 1 : 0
+  count = local.irsa_role_create ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -74,23 +74,23 @@ data "aws_iam_policy_document" "this_irsa" {
       variable = "${replace(var.cluster_identity_oidc_issuer, "https://", "")}:sub"
 
       values = [
-        "system:serviceaccount:${var.k8s_namespace}:${var.k8s_service_account_name}",
+        "system:serviceaccount:${var.namespace}:${var.service_account_name}",
       ]
     }
   }
 }
 
 resource "aws_iam_role" "this" {
-  count = local.k8s_irsa_role_create ? 1 : 0
+  count = local.irsa_role_create ? 1 : 0
 
-  name               = "${var.k8s_irsa_role_name_prefix}-${var.helm_release_name}"
+  name               = "${var.irsa_role_name_prefix}-${var.helm_release_name}"
   assume_role_policy = data.aws_iam_policy_document.this_irsa[0].json
 
-  tags = var.tags
+  tags = var.irsa_tags
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = local.k8s_irsa_role_create ? 1 : 0
+  count = local.irsa_role_create ? 1 : 0
 
   role       = aws_iam_role.this[0].name
   policy_arn = aws_iam_policy.this[0].arn
@@ -98,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this_additional" {
-  for_each = local.k8s_irsa_role_create ? var.k8s_irsa_additional_policies : {}
+  for_each = local.irsa_role_create ? var.irsa_additional_policies : {}
 
   role       = aws_iam_role.this[0].name
   policy_arn = each.value

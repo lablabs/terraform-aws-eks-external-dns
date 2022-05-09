@@ -1,24 +1,19 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: {{ .Values.apiVersion }}
 kind: Application
 metadata:
   name: {{ include "argocd_application.fullname" . }}
   labels:
     {{- include "argocd_application.labels" . | nindent 4 }}
+    {{- if .Values.labels }}
+    {{ toYaml .Values.labels | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if .Values.annotations }}
+    {{ toYaml .Values.annotations | indent 4 }}
+    {{- end }}
+  finalizers:
+    {{- if .Values.finalizers }}
+    {{ toYaml .Values.finalizers | indent 4 }}
+    {{- end }}
 spec:
-  project: {{ .Values.project }}
-  {{ with .Values.source }}
-  source:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{ with .Values.destination }}
-  destination:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{ with .Values.syncPolicy }}
-  syncPolicy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{ with .Values.info }}
-  info:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{ toYaml .Values.spec | nindent 2 }}
