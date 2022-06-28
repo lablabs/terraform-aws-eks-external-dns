@@ -15,7 +15,7 @@ A terraform module to deploy the ExternalDNS on Amazon EKS cluster.
 
 ## Related Projects
 
-Check out these [related projects](https://github.com/orgs/lablabs/repositories?q=terraform-aws-eks&type=public&language=&sort=).
+Check out other [terraform kubernetes addons](https://github.com/orgs/lablabs/repositories?q=terraform-aws-eks&type=public&language=&sort=).
 
 ## Deployment methods
 
