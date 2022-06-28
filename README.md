@@ -2,20 +2,20 @@
 
 [![Labyrinth Labs logo](ll-logo.png)](https://www.lablabs.io)
 
-We help companies build, run, deploy and scale software and infrastructure by embracing the right technologies and principles. Check out our website at https://lablabs.io/
+We help companies build, run, deploy and scale software and infrastructure by embracing the right technologies and principles. Check out our website at <https://lablabs.io/>
 
 ---
 
-![Terraform validation](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/Terraform%20validation/badge.svg?branch=master)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-success?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Terraform validate](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml)
+[![pre-commit](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/pre-commit.yml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/pre-commit.yml)
 
 ## Description
 
-A terraform module to deploy an ExternalDNS on Amazon EKS cluster.
+A terraform module to deploy the ExternalDNS on Amazon EKS cluster.
 
 ## Related Projects
 
-Check out other [terraform kubernetes addons](https://github.com/orgs/lablabs/repositories?q=terraform-aws-eks&type=public&language=&sort=).
+Check out these [related projects](https://github.com/orgs/lablabs/repositories?q=terraform-aws-eks&type=public&language=&sort=).
 
 ## Deployment methods
 
