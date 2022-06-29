@@ -87,24 +87,6 @@ module "external_dns_argo_kubernetes" {
     "automated" : {}
     "syncOptions" = ["CreateNamespace=true"]
   }
-
-  # values = yamlencode({
-  #   "LogLevel" : "debug"
-  #   "provider" : "aws"
-  #   "registry" : "txt"
-  #   "txtOwnerId" : "eks-cluster"
-  #   "txtPrefix" : "external-dns"
-  #   "policy" : "sync"
-  #   "domainFilters" : [
-  #     "example.com"
-  #   ]
-  #   "publishInternalServices" : "true"
-  #   "triggerLoopOnEvent" : "true"
-  #   "interval" : "5s"
-  #   "podLabels" : {
-  #     "app" : "aws-external-dns-helm"
-  #   }
-  # })
 }
 
 module "external_dns_argo_helm" {
@@ -125,53 +107,4 @@ module "external_dns_argo_helm" {
     "automated" : {}
     "syncOptions" = ["CreateNamespace=true"]
   }
-
-  # values = yamlencode({
-  #   "LogLevel" : "debug"
-  #   "provider" : "aws"
-  #   "registry" : "txt"
-  #   "txtOwnerId" : "eks-cluster"
-  #   "txtPrefix" : "external-dns"
-  #   "policy" : "sync"
-  #   "domainFilters" : [
-  #     "example.com"
-  #   ]
-  #   "publishInternalServices" : "true"
-  #   "triggerLoopOnEvent" : "true"
-  #   "interval" : "5s"
-  #   "podLabels" : {
-  #     "app" : "aws-external-dns-helm"
-  #   }
-  # })
 }
-
-
-
-# module "example-assume" {
-#   source = "../../"
-
-#   cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
-#   cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
-
-#   irsa_assume_role_enabled = true
-#   irsa_assume_role_arn     = "arn"
-#   values = yamlencode({
-#     "LogLevel" : "debug"
-#     "provider" : "aws"
-#     "registry" : "txt"
-#     "txtOwnerId" : "eks-cluster"
-#     "txtPrefix" : "external-dns"
-#     "policy" : "sync"
-#     "zoneType" : "public"
-#     "extraArgs" : {
-#       "annotation-filter=external-dns.alpha.kubernetes.io/class=example" : ""
-#     }
-#     "domainFilters" : [
-#       "example.com"
-#     ]
-#     "publishInternalServices" : "true"
-#     "triggerLoopOnEvent" : "true"
-#     "interval" : "5s"
-#   })
-
-# }
