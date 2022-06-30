@@ -22,7 +22,7 @@ variable "helm_chart_name" {
 
 variable "helm_chart_version" {
   type        = string
-  default     = "6.3.0"
+  default     = "6.5.6"
   description = "Version of the Helm chart"
 }
 
@@ -163,7 +163,11 @@ variable "argo_sync_policy" {
 }
 
 variable "argo_metadata" {
-  default     = {}
+  default = {
+    "finalizers" : [
+      "resources-finalizer.argocd.argoproj.io"
+    ]
+  }
   description = "ArgoCD Application metadata configuration. Override or create additional metadata parameters"
 }
 

@@ -1,0 +1,51 @@
+name: Terraform validate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  versionExtract:
+    name: Extract min/max Terraform versions
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract Terraform min/max versions
+        id: minMax
+        uses: clowdhaus/terraform-min-max@main
+        with:
+          directory: .
+    outputs:
+      minVersion: ${{ steps.minMax.outputs.minVersion }}
+      maxVersion: ${{ steps.minMax.outputs.maxVersion }}
+
+  terraform-validate:
+    runs-on: ubuntu-20.04
+    needs: versionExtract
+    strategy:
+      matrix:
+        tf_ver:
+          - ${{ needs.versionExtract.outputs.minVersion }}
+          - ${{ needs.versionExtract.outputs.maxVersion }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ matrix.tf_ver }}
+
+    - name: Validate module
+      run: |
+        terraform init
+        terraform validate
+    - name: Validate example
+      run: |
+        cd examples/basic
+        terraform init
+        terraform validate
