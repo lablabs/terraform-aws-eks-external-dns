@@ -40,10 +40,12 @@ jobs:
       with:
         terraform_version: ${{ matrix.tf_ver }}
 
-    - name: Terraform Init
-      id: init
-      run: terraform init
-
-    - name: Terraform Validate
-      id: validate
-      run: terraform validate
+    - name: Validate module
+      run: |
+        terraform init
+        terraform validate
+    - name: Validate example
+      run: |
+        cd examples/basic
+        terraform init
+        terraform validate
