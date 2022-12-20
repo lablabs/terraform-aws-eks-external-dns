@@ -12,7 +12,7 @@ locals {
       "targetRevision" : var.helm_chart_version
       "helm" : {
         "releaseName" : var.helm_release_name
-        "parameters" : [for k, v in var.settings : tomap({ "forceString" : true, "name" : k, "value" : v })]
+        "parameters" : [for k, v in var.settings : { "forceString" : true, "name" : k, "value" : v }]
         "values" : var.enabled ? data.utils_deep_merge_yaml.values[0].output : ""
       }
     }
