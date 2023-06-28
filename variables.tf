@@ -107,6 +107,12 @@ variable "policy_allowed_zone_ids" {
   description = "List of the Route53 zone ids for service account IAM role access"
 }
 
+variable "policy_aws_partition" {
+  type        = string
+  default     = "aws"
+  description = "AWS partition in which the resources are located. Avaliable values are `aws`, `aws-cn`, `aws-us-gov`"
+}
+
 variable "irsa_tags" {
   type        = map(string)
   default     = {}

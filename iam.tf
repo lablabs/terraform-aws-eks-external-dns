@@ -12,7 +12,8 @@ data "aws_iam_policy_document" "this" {
       "route53:ChangeResourceRecordSets",
     ]
     resources = formatlist(
-      "arn:aws:route53:::hostedzone/%s",
+      "arn:%s:route53:::hostedzone/%s",
+      var.policy_aws_partition,
       var.policy_allowed_zone_ids
     )
   }
