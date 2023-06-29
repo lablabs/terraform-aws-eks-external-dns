@@ -60,5 +60,4 @@ resource "helm_release" "this" {
       binary_path = postrender.value
     }
   }
-
 }

@@ -91,7 +91,7 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = local.irsa_role_create ? 1 : 0
+  count = local.irsa_role_create && (var.irsa_policy_enabled || var.irsa_assume_role_enabled) ? 1 : 0
 
   role       = aws_iam_role.this[0].name
   policy_arn = aws_iam_policy.this[0].arn
