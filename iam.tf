@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "this" {
     ]
     resources = formatlist(
       "arn:%s:route53:::hostedzone/%s",
-      var.policy_aws_partition,
+      var.aws_partition,
       var.policy_allowed_zone_ids
     )
   }
