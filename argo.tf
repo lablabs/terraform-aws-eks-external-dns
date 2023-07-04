@@ -12,7 +12,7 @@ locals {
       "targetRevision" : var.helm_chart_version
       "helm" : {
         "releaseName" : var.helm_release_name
-        "parameters" : [for k, v in var.settings : { "forceString" : true, "name" : k, "value" : v }]
+        "parameters" : [for k, v in var.settings : tomap({ "forceString" : true, "name" : k, "value" : v })]
         "values" : var.enabled ? data.utils_deep_merge_yaml.values[0].output : ""
       }
     }
@@ -23,37 +23,6 @@ locals {
     "syncPolicy" : var.argo_sync_policy
     "info" : var.argo_info
   }
-}
-
-data "utils_deep_merge_yaml" "argo_helm_values" {
-  count = var.enabled && var.argo_enabled && var.argo_helm_enabled ? 1 : 0
-  input = compact([
-    yamlencode({
-      "apiVersion" : var.argo_apiversion
-    }),
-    yamlencode({
-      "spec" : local.argo_application_values
-    }),
-    yamlencode({
-      "spec" : var.argo_spec
-    }),
-    yamlencode(
-      local.argo_application_metadata
-    )
-  ])
-}
-
-resource "helm_release" "argo_application" {
-  count = var.enabled && var.argo_enabled && var.argo_helm_enabled ? 1 : 0
-
-  chart     = "${path.module}/helm/argocd-application"
-  name      = var.helm_release_name
-  namespace = var.argo_namespace
-
-  values = [
-    data.utils_deep_merge_yaml.argo_helm_values[0].output,
-    var.argo_helm_values
-  ]
 }
 
 resource "kubernetes_manifest" "this" {
@@ -71,7 +40,6 @@ resource "kubernetes_manifest" "this" {
       var.argo_spec
     )
   }
-
   computed_fields = var.argo_kubernetes_manifest_computed_fields
 
   field_manager {

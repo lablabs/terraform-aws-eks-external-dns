@@ -1,5 +1,8 @@
 name: pre-commit
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   pull_request:
@@ -8,36 +11,42 @@ on:
       - master
 
 env:
+  PYTHON_VERSION: "3.10"
   TERRAFORM_DOCS_VERSION: "v0.16.0"
-  TFLINT_VERSION: "v0.36.2"
+  TFLINT_VERSION: "v0.40.1"
 
 jobs:
   pre-commit:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
 
-    - name: Install additional pre-commit hooks
-      shell: bash
-      run: |
-        echo "########### Install Checkov ####################"
-        pip install checkov
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
 
-        echo "########### Install Terraform-docs #############"
-        wget https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
-        tar xvzf terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz
-        mkdir -p ~/terraform-docs/bin/
-        install terraform-docs ~/terraform-docs/bin/
-        echo '~/terraform-docs/bin/' >> $GITHUB_PATH
+      - name: Install terraform-docs
+        uses: jaxxstorm/action-install-gh-release@v1.9.0
+        with:
+          repo: terraform-docs/terraform-docs
+          tag: ${{ env.TERRAFORM_DOCS_VERSION }}
+          cache: enable
 
-        echo "########### Install Terraform-linters ##########"
-        wget https://github.com/terraform-linters/tflint/releases/download/${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
-        unzip tflint_linux_amd64.zip
-        mkdir -p ~/tflint/bin/
-        echo '~/tflint/bin/' >> $GITHUB_PATH
-        install tflint ~/tflint/bin/
-        ~/tflint/bin/tflint --init
+      - name: TFLint cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.tflint.d/plugins
+          key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
-    - name: Run pre-commit
-      uses: pre-commit/action@v2.0.3
+      - name: Install TFLint
+        uses: terraform-linters/setup-tflint@v2
+        with:
+          tflint_version: ${{ env.TFLINT_VERSION }}
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.0

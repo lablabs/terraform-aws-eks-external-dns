@@ -14,6 +14,6 @@ output "kubernetes_application_attributes" {
 }
 
 output "iam_role_attributes" {
-  description = "IAM role atributes"
+  description = "External DNS IAM role atributes"
   value       = try(aws_iam_role.this[0], {})
 }

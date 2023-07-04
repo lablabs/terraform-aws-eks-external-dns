@@ -62,6 +62,7 @@ variable "service_account_create" {
 }
 
 variable "service_account_name" {
+  type        = string
   default     = "external-dns"
   description = "The k8s external-dns service account name"
 }
@@ -85,6 +86,7 @@ variable "irsa_assume_role_enabled" {
 }
 
 variable "irsa_assume_role_arn" {
+  type        = string
   default     = ""
   description = "Assume role arn. Assume role must be enabled."
 }
@@ -107,6 +109,12 @@ variable "policy_allowed_zone_ids" {
   description = "List of the Route53 zone ids for service account IAM role access"
 }
 
+variable "aws_partition" {
+  type        = string
+  default     = "aws"
+  description = "AWS partition in which the resources are located. Avaliable values are `aws`, `aws-cn`, `aws-us-gov`"
+}
+
 variable "irsa_tags" {
   type        = map(string)
   default     = {}
@@ -125,16 +133,34 @@ variable "values" {
   description = "Additional yaml encoded values which will be passed to the Helm chart, see https://hub.helm.sh/charts/bitnami/external-dns"
 }
 
+variable "argo_namespace" {
+  type        = string
+  default     = "argo"
+  description = "Namespace to deploy ArgoCD application CRD to"
+}
+
 variable "argo_enabled" {
   type        = bool
   default     = false
   description = "If set to true, the module will be deployed as ArgoCD application, otherwise it will be deployed as a Helm release"
 }
 
-variable "argo_namespace" {
+variable "argo_helm_enabled" {
+  type        = bool
+  default     = false
+  description = "If set to true, the ArgoCD Application manifest will be deployed using Kubernetes provider as a Helm release. Otherwise it'll be deployed as a Kubernetes manifest. See Readme for more info"
+}
+
+variable "argo_helm_wait_timeout" {
   type        = string
-  default     = "argo"
-  description = "Namespace to deploy ArgoCD application CRD to"
+  default     = "10m"
+  description = "Timeout for ArgoCD Application Helm release wait job"
+}
+
+variable "argo_helm_wait_backoff_limit" {
+  type        = number
+  default     = 6
+  description = "Backoff limit for ArgoCD Application Helm release wait job"
 }
 
 variable "argo_destination_server" {
@@ -150,6 +176,10 @@ variable "argo_project" {
 }
 
 variable "argo_info" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
   default = [{
     "name"  = "terraform"
     "value" = "true"
@@ -158,11 +188,13 @@ variable "argo_info" {
 }
 
 variable "argo_sync_policy" {
+  type        = any
   description = "ArgoCD syncPolicy manifest parameter"
   default     = {}
 }
 
 variable "argo_metadata" {
+  type = any
   default = {
     "finalizers" : [
       "resources-finalizer.argocd.argoproj.io"
@@ -171,23 +203,32 @@ variable "argo_metadata" {
   description = "ArgoCD Application metadata configuration. Override or create additional metadata parameters"
 }
 
-variable "argo_spec" {
-  default     = {}
-  description = "ArgoCD Application spec configuration. Override or create additional spec parameters"
-}
-
 variable "argo_apiversion" {
+  type        = string
   default     = "argoproj.io/v1alpha1"
   description = "ArgoCD Appliction apiVersion"
 }
 
+variable "argo_spec" {
+  type        = any
+  default     = {}
+  description = "ArgoCD Application spec configuration. Override or create additional spec parameters"
+}
+
+variable "argo_helm_values" {
+  type        = string
+  default     = ""
+  description = "Value overrides to use when deploying argo application object with helm"
+}
+
 variable "argo_kubernetes_manifest_computed_fields" {
   type        = list(string)
-  default     = ["metadata.labels", "metadata.annotations"]
+  default     = ["metadata.labels", "metadata.annotations", "metadata.finalizers"]
   description = "List of paths of fields to be handled as \"computed\". The user-configured value for the field will be overridden by any different value returned by the API after apply."
 }
 
 variable "argo_kubernetes_manifest_field_manager_name" {
+  type        = string
   default     = "Terraform"
   description = "The name of the field manager to use when applying the kubernetes manifest resource. Defaults to Terraform"
 }
@@ -202,17 +243,6 @@ variable "argo_kubernetes_manifest_wait_fields" {
   type        = map(string)
   default     = {}
   description = "A map of fields and a corresponding regular expression with a pattern to wait for. The provider will wait until the field matches the regular expression. Use * for any value."
-}
-
-variable "argo_helm_enabled" {
-  type        = bool
-  default     = false
-  description = "If set to true, the ArgoCD Application manifest will be deployed using Kubernetes provider as a Helm release. Otherwise it'll be deployed as a Kubernetes manifest. See Readme for more info"
-}
-
-variable "argo_helm_values" {
-  default     = ""
-  description = "Value overrides to use when deploying argo application object with helm"
 }
 
 variable "helm_repo_key_file" {
