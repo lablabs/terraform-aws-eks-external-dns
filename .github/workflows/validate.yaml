@@ -1,0 +1,51 @@
+name: Terraform validate
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  extract-version:
+    name: Extract min/max Terraform versions
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Extract Terraform min/max versions
+        id: terraform-min-max
+        uses: clowdhaus/terraform-min-max@f489335873df04c3ce04b5e73f385a726d910039 # v1.3.2
+        with:
+          directory: .
+    outputs:
+      minVersion: ${{ steps.terraform-min-max.outputs.minVersion }}
+      maxVersion: ${{ steps.terraform-min-max.outputs.maxVersion }}
+
+  terraform-validate:
+    runs-on: ubuntu-24.04
+    needs: extract-version
+    strategy:
+      matrix:
+        tf_ver:
+          - ${{ needs.extract-version.outputs.minVersion }}
+          - ${{ needs.extract-version.outputs.maxVersion }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: ${{ matrix.tf_ver }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
