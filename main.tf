@@ -23,6 +23,7 @@ locals {
       irsa_assume_role_arns_tmp = var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns : []
       irsa_assume_role_arns = var.irsa_assume_role_arn != null ? concat(local.addon.name.irsa_assume_role_arns_tmp, [var.irsa_assume_role_arn]) : local.addon.name.irsa_assume_role_arns_tmp
       irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy_document.this[0].json
+      irsa_policy_enabled = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : false
     }
   }
 

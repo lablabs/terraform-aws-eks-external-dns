@@ -1,5 +1,5 @@
 data "aws_iam_policy_document" "this" {
-  count = var.irsa_policy == null && var.irsa_policy_enabled && !var.irsa_assume_role_enabled ? 1 : 0
+  count = var.irsa_policy == null && !var.irsa_assume_role_enabled ? 1 : 0
 
   statement {
     sid    = "ChangeResourceRecordSets"
