@@ -20,7 +20,8 @@ locals {
   addon_irsa = {
     (local.addon.name) = {
       # This module used role_arn (single) so we use to extend the role_arns (list) for easier usage
-      irsa_assume_role_arns = var.irsa_assume_role_arn != null ? concat(irsa_assume_role_arns, [irsa_assume_role_arns]) : []
+      irsa_assume_role_arns_tmp = var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns : []
+      irsa_assume_role_arns = var.irsa_assume_role_arn != null ? concat(local.addon.name.irsa_assume_role_arns_tmp, [var.irsa_assume_role_arn]) : local.addon.name.irsa_assume_role_arns_tmp
       irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy.this[0].jsons	
     }
   }
