@@ -1,37 +1,44 @@
 /**
- * # AWS EKS Universal Addon Terraform module
+ * # AWS EKS External DNS Terraform module
  *
- * A Terraform module to deploy the universal addon on Amazon EKS cluster.
+ * A terraform module to deploy the ExternalDNS on Amazon EKS cluster.
  *
  * [![Terraform validate](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml)
  * [![pre-commit](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml)
  */
-# FIXME config: update addon docs above
-locals {
-  # FIXME config: add addon configuration here
-  addon = {
-    name = "universal-addon"
 
-    helm_chart_name    = "raw"
-    helm_chart_version = "0.1.0"
-    helm_repo_url      = "https://lablabs.github.io"
+locals {
+  addon = {
+    name = "external-dns"
+    namespace = "kube-system"
+
+    helm_chart_name    = "external-dns"
+    helm_chart_version = "6.5.6"
+    helm_repo_url      = "https://charts.bitnami.com/bitnami"
   }
 
-  # FIXME config: add addon IRSA configuration here or remove if not needed
   addon_irsa = {
     (local.addon.name) = {
-      # FIXME config: add default IRSA overrides here or leave empty if not needed, but make sure to keep at least one key
-    }
-  }
-
-  # FIXME config: add addon OIDC configuration here or remove if not needed
-  addon_oidc = {
-    (local.addon.name) = {
-      # FIXME config: add default OIDC overrides here or leave empty if not needed, but make sure to keep at least one key
+      # This module used role_arn (single) so we use to extend the role_arns (list) for easier usage
+      irsa_assume_role_arns = var.irsa_assume_role_arn != null ? concat(irsa_assume_role_arns, [irsa_assume_role_arns]) : []
+      irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy.this[0].jsons	
     }
   }
 
   addon_values = yamlencode({
-    # FIXME config: add default values here
+    "aws" : {
+      "region" : data.aws_region.current.name
+      "assumeRoleArn" : var.irsa_assume_role_arn != null ? var.irsa_assume_role_arn : ""
+    }
+    "rbac" : {
+      "create" : var.rbac_create != null ? var.rbac_create : true
+    }
+    "serviceAccount" : {
+      "create" : var.service_account_create != null ? var.service_account_create : true
+      "name" : var.service_account_name != null ? var.service_account_name : local.addon.name
+      "annotations" : module.addon-irsa[local.addon.name].irsa_role_enabled ? {
+        "eks.amazonaws.com/role-arn" : module.addon-irsa[local.addon.name].iam_role_attributes.arn 
+      } : tomap({})
+    }
   })
 }
