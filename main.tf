@@ -26,18 +26,18 @@ locals {
   }
 
   addon_values = yamlencode({
-    "aws" : {
-      "region" : data.aws_region.current.name   
-      "assumeRoleArn" : var.irsa_assume_role_arn != null ? var.irsa_assume_role_arn : ""
+    aws = {
+      region = data.aws_region.current.name   
+      assumeRoleArn = var.irsa_assume_role_arn != null ? var.irsa_assume_role_arn : ""
     }
-    "rbac" : {
-      "create" : var.rbac_create != null ? var.rbac_create : true
+    rbac = {
+      create = var.rbac_create != null ? var.rbac_create : true
     }
-    "serviceAccount" : {
-      "create" : var.service_account_create != null ? var.service_account_create : true
-      "name" : var.service_account_name != null ? var.service_account_name : local.addon.name
-      "annotations" : module.addon-irsa[local.addon.name].irsa_role_enabled ? {
-        "eks.amazonaws.com/role-arn" : module.addon-irsa[local.addon.name].iam_role_attributes.arn 
+    serviceAccount = {
+      create = var.service_account_create != null ? var.service_account_create : true
+      name = var.service_account_name != null ? var.service_account_name : local.addon.name
+      annotations = module.addon-irsa[local.addon.name].irsa_role_enabled ? {
+        "eks.amazonaws.com/role-arn" = module.addon-irsa[local.addon.name].iam_role_attributes.arn 
       } : tomap({})
     }
   })
