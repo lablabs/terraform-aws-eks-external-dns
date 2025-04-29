@@ -3,8 +3,9 @@
  *
  * A terraform module to deploy the [ExternalDNS](https://kubernetes-sigs.github.io/external-dns/latest) on Amazon EKS cluster.
  *
- * [![Terraform validate](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml)
- * [![pre-commit](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml)
+ * [![Terraform validate](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml)
+ * [![pre-commit](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/pre-commit.yml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/pre-commit.yml)
+ * 
  */
 
 locals {
@@ -22,7 +23,7 @@ locals {
       # This module used role_arn (single) so we use to extend the role_arns (list) for easier usage
       irsa_assume_role_arns = concat((var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns : []), (var.irsa_assume_role_arn != null ? [var.irsa_assume_role_arn] : []))  
       irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy_document.this[0].json
-      irsa_policy_enabled = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : true # Its true by default in module and we need to generate custom policy
+      irsa_policy_enabled = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : true # Its false by default in module and we need to generate custom policy
     }
   }
 
