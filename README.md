@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# AWS EKS Universal Addon Terraform module
+# AWS EKS External DNS Terraform module
 
-A Terraform module to deploy the universal addon on Amazon EKS cluster.
+A terraform module to deploy the [ExternalDNS](https://kubernetes-sigs.github.io/external-dns/latest) on Amazon EKS cluster.
 
 [![Terraform validate](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/validate.yaml)
 [![pre-commit](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-universal-addon/actions/workflows/pre-commit.yaml)
@@ -52,11 +52,12 @@ See [basic example](examples/basic) for further information.
 |------|--------|---------|
 | <a name="module_addon"></a> [addon](#module\_addon) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon | v0.0.14 |
 | <a name="module_addon-irsa"></a> [addon-irsa](#module\_addon-irsa) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa | v0.0.14 |
-| <a name="module_addon-oidc"></a> [addon-oidc](#module\_addon-oidc) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-oidc | v0.0.14 |
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [utils_deep_merge_yaml.values](https://registry.terraform.io/providers/cloudposse/utils/latest/docs/data-sources/deep_merge_yaml) | data source |
 > [!IMPORTANT]
 > Variables defined in [variables-addon[-irsa|oidc].tf](variables-addon.tf) defaults to `null` to have them overridable by the addon configuration defined though the [`local.addon[_irsa|oidc].*`](main.tf) local variable with the default values defined in [addon[-irsa|oidc].tf](addon.tf).
@@ -90,6 +91,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_argo_source_type"></a> [argo\_source\_type](#input\_argo\_source\_type) | Source type for ArgoCD Application. Can be either `helm`, `kustomize`, or `directory`. Defaults to `helm`. | `string` |
 | <a name="input_argo_spec"></a> [argo\_spec](#input\_argo\_spec) | ArgoCD Application spec configuration. Override or create additional spec parameters. Defaults to `{}`. | `any` |
 | <a name="input_argo_sync_policy"></a> [argo\_sync\_policy](#input\_argo\_sync\_policy) | ArgoCD Application manifest syncPolicy parameter. Defaults to `{}`. | `any` |
+| <a name="input_aws_partition"></a> [aws\_partition](#input\_aws\_partition) | AWS partition in which the resources are located. Avaliable values are `aws`, `aws-cn`, `aws-us-gov` | `string` |
 | <a name="input_cluster_identity_oidc_issuer"></a> [cluster\_identity\_oidc\_issuer](#input\_cluster\_identity\_oidc\_issuer) | The OIDC Identity issuer for the cluster (required). | `string` |
 | <a name="input_cluster_identity_oidc_issuer_arn"></a> [cluster\_identity\_oidc\_issuer\_arn](#input\_cluster\_identity\_oidc\_issuer\_arn) | The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a Service Account (required). | `string` |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources. | `bool` |
@@ -128,6 +130,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_helm_wait"></a> [helm\_wait](#input\_helm\_wait) | Will wait until all Helm release resources are in a ready state before marking the release as successful. It will wait for as long as timeout. Defaults to `false`. | `bool` |
 | <a name="input_helm_wait_for_jobs"></a> [helm\_wait\_for\_jobs](#input\_helm\_wait\_for\_jobs) | If wait is enabled, will wait until all Helm Jobs have been completed before marking the release as successful. It will wait for as long as timeout. Defaults to `false`. | `bool` |
 | <a name="input_irsa_additional_policies"></a> [irsa\_additional\_policies](#input\_irsa\_additional\_policies) | Map of the additional policies to be attached to IRSA role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
+| <a name="input_irsa_assume_role_arn"></a> [irsa\_assume\_role\_arn](#input\_irsa\_assume\_role\_arn) | Assume role arn. Assume role must be enabled. | `string` |
 | <a name="input_irsa_assume_role_arns"></a> [irsa\_assume\_role\_arns](#input\_irsa\_assume\_role\_arns) | List of ARNs assumable by the IRSA role. Applied only if `irsa_assume_role_enabled` is `true`. Defaults to `[]`. | `list(string)` |
 | <a name="input_irsa_assume_role_enabled"></a> [irsa\_assume\_role\_enabled](#input\_irsa\_assume\_role\_enabled) | Whether IRSA is allowed to assume role defined by `irsa_assume_role_arn`. Mutually exclusive with `irsa_policy_enabled`. Defaults to `false`. | `bool` |
 | <a name="input_irsa_assume_role_policy_condition_test"></a> [irsa\_assume\_role\_policy\_condition\_test](#input\_irsa\_assume\_role\_policy\_condition\_test) | Specifies the condition test to use for the assume role trust policy. Defaults to `StringEquals`. | `string` |
@@ -140,24 +143,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_irsa_role_name_prefix"></a> [irsa\_role\_name\_prefix](#input\_irsa\_role\_name\_prefix) | IRSA role name prefix. Either `irsa_role_name_prefix` or `irsa_role_name` must be set. Defaults to `""`. | `string` |
 | <a name="input_irsa_tags"></a> [irsa\_tags](#input\_irsa\_tags) | IRSA resources tags. Defaults to `{}`. | `map(string)` |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The Kubernetes Namespace in which the Helm chart will be installed (required). | `string` |
-| <a name="input_oidc_additional_policies"></a> [oidc\_additional\_policies](#input\_oidc\_additional\_policies) | Map of the additional policies to be attached to OIDC role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
-| <a name="input_oidc_assume_role_arns"></a> [oidc\_assume\_role\_arns](#input\_oidc\_assume\_role\_arns) | List of ARNs assumable by the OIDC role. Applied only if `oidc_assume_role_enabled` is `true`. Defaults to `[]`. | `list(string)` |
-| <a name="input_oidc_assume_role_enabled"></a> [oidc\_assume\_role\_enabled](#input\_oidc\_assume\_role\_enabled) | Whether OIDC is allowed to assume role defined by `oidc_assume_role_arn`. Mutually exclusive with `oidc_policy_enabled`. Defaults to `false`. | `bool` |
-| <a name="input_oidc_assume_role_policy_condition_test"></a> [oidc\_assume\_role\_policy\_condition\_test](#input\_oidc\_assume\_role\_policy\_condition\_test) | Specifies the condition test to use for the assume role trust policy. Defaults to `StringLike`. | `string` |
-| <a name="input_oidc_assume_role_policy_condition_values"></a> [oidc\_assume\_role\_policy\_condition\_values](#input\_oidc\_assume\_role\_policy\_condition\_values) | Specifies the values for the assume role trust policy condition. Defaults to `[]`. | `list(string)` |
-| <a name="input_oidc_assume_role_policy_condition_variable"></a> [oidc\_assume\_role\_policy\_condition\_variable](#input\_oidc\_assume\_role\_policy\_condition\_variable) | Specifies the variable to use for the assume role trust policy. Defaults to `""`. | `string` |
-| <a name="input_oidc_custom_provider_arn"></a> [oidc\_custom\_provider\_arn](#input\_oidc\_custom\_provider\_arn) | Specifies a custom OIDC provider ARN. Defaults to `""`. | `string` |
-| <a name="input_oidc_openid_client_ids"></a> [oidc\_openid\_client\_ids](#input\_oidc\_openid\_client\_ids) | List of OpenID Connect client IDs that are allowed to assume the OIDC provider. Defaults to `[]`. | `list(string)` |
-| <a name="input_oidc_openid_provider_url"></a> [oidc\_openid\_provider\_url](#input\_oidc\_openid\_provider\_url) | OIDC provider URL. Defaults to `""`. | `string` |
-| <a name="input_oidc_openid_thumbprints"></a> [oidc\_openid\_thumbprints](#input\_oidc\_openid\_thumbprints) | List of thumbprints of the OIDC provider's server certificate. Defaults to `[]`. | `list(string)` |
-| <a name="input_oidc_permissions_boundary"></a> [oidc\_permissions\_boundary](#input\_oidc\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the OIDC role. Defaults to `null`. | `string` |
-| <a name="input_oidc_policy"></a> [oidc\_policy](#input\_oidc\_policy) | AWS IAM policy JSON document to be attached to the OIDC role. Applied only if `oidc_policy_enabled` is `true`. Defaults to `""`. | `string` |
-| <a name="input_oidc_policy_enabled"></a> [oidc\_policy\_enabled](#input\_oidc\_policy\_enabled) | Whether to create IAM policy specified by `oidc_policy`. Mutually exclusive with `oidc_assume_role_enabled`. Defaults to `false`. | `bool` |
-| <a name="input_oidc_provider_create"></a> [oidc\_provider\_create](#input\_oidc\_provider\_create) | Whether to create OIDC provider. Set to `false` if you want to disable default OIDC provider when `oidc_custom_provider_arn` is set. Defaults to `true`. | `bool` |
-| <a name="input_oidc_role_create"></a> [oidc\_role\_create](#input\_oidc\_role\_create) | Whether to create OIDC role. Defaults to `true`. | `bool` |
-| <a name="input_oidc_role_name"></a> [oidc\_role\_name](#input\_oidc\_role\_name) | OIDC role name. The value is prefixed by `oidc_role_name_prefix`. Either `oidc_role_name` or `oidc_role_name_prefix` must be set. Defaults to `""`. | `string` |
-| <a name="input_oidc_role_name_prefix"></a> [oidc\_role\_name\_prefix](#input\_oidc\_role\_name\_prefix) | OIDC role name prefix. Either `oidc_role_name_prefix` or `oidc_role_name` must be set. Defaults to `""`. | `string` |
-| <a name="input_oidc_tags"></a> [oidc\_tags](#input\_oidc\_tags) | OIDC resources tags. Defaults to `{}`. | `map(string)` |
+| <a name="input_policy_allowed_zone_ids"></a> [policy\_allowed\_zone\_ids](#input\_policy\_allowed\_zone\_ids) | List of the Route53 zone ids for service account IAM role access | `list(string)` |
 | <a name="input_rbac_create"></a> [rbac\_create](#input\_rbac\_create) | Whether to create and use RBAC resources. Defaults to `true`. | `bool` |
 | <a name="input_service_account_create"></a> [service\_account\_create](#input\_service\_account\_create) | Whether to create Service Account. Defaults to `true`. | `bool` |
 | <a name="input_service_account_name"></a> [service\_account\_name](#input\_service\_account\_name) | The Kubernetes Service Account name. Defaults to the addon name. Defaults to `""`. | `string` |
@@ -170,7 +156,6 @@ See [basic example](examples/basic) for further information.
 |------|-------------|
 | <a name="output_addon"></a> [addon](#output\_addon) | The addon module outputs |
 | <a name="output_addon_irsa"></a> [addon\_irsa](#output\_addon\_irsa) | The addon IRSA module outputs |
-| <a name="output_addon_oidc"></a> [addon\_oidc](#output\_addon\_oidc) | The addon oidc module outputs |
 ## Contributing and reporting issues
 
 Feel free to create an issue in this repository if you have questions, suggestions or feature requests.
