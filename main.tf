@@ -20,8 +20,6 @@ locals {
 
   addon_irsa = {
     (local.addon.name) = {
-      # This module used role_arn (single) so we use to extend the role_arns (list) for easier usage
-      irsa_assume_role_arns = concat((var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns : []), (var.irsa_assume_role_arn != null ? [var.irsa_assume_role_arn] : []))  
       irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy_document.this[0].json
       irsa_policy_enabled = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : true # Its false by default in module and we need to generate custom policy
     }
