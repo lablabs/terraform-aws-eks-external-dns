@@ -10,7 +10,7 @@
 
 locals {
   addon = {
-    name = "external-dns"
+    name      = "external-dns"
     namespace = "kube-system"
 
     helm_chart_name    = "external-dns"
@@ -20,14 +20,14 @@ locals {
 
   addon_irsa = {
     (local.addon.name) = {
-      irsa_policy = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy_document.this[0].json
+      irsa_policy         = var.irsa_policy != null ? var.irsa_policy : data.aws_iam_policy_document.this[0].json
       irsa_policy_enabled = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : true # Its false by default in module and we need to generate custom policy
     }
   }
 
   addon_values = yamlencode({
     aws = {
-      region = data.aws_region.current.name   
+      region        = data.aws_region.current.name
       assumeRoleArn = var.irsa_assume_role_arn != null ? var.irsa_assume_role_arn : ""
     }
     rbac = {
@@ -35,9 +35,9 @@ locals {
     }
     serviceAccount = {
       create = var.service_account_create != null ? var.service_account_create : true
-      name = var.service_account_name != null ? var.service_account_name : local.addon.name
+      name   = var.service_account_name != null ? var.service_account_name : local.addon.name
       annotations = module.addon-irsa[local.addon.name].irsa_role_enabled ? {
-        "eks.amazonaws.com/role-arn" = module.addon-irsa[local.addon.name].iam_role_attributes.arn 
+        "eks.amazonaws.com/role-arn" = module.addon-irsa[local.addon.name].iam_role_attributes.arn
       } : tomap({})
     }
   })
