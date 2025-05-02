@@ -13,7 +13,6 @@ locals {
     name      = "external-dns"
     namespace = "kube-system"
 
-    helm_chart_name    = "external-dns"
     helm_chart_version = "1.15.1"
     helm_repo_url      = "https://kubernetes-sigs.github.io/external-dns"
   }
