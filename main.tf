@@ -25,9 +25,8 @@ locals {
   }
 
   addon_values = yamlencode({
-    aws = {
-      region        = data.aws_region.current.name
-      assumeRoleArn = var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns[0] : ""
+    provider = {
+      name = "aws"
     }
     rbac = {
       create = var.rbac_create != null ? var.rbac_create : true
@@ -41,5 +40,3 @@ locals {
     }
   })
 }
-
-data "aws_region" "current" {}
