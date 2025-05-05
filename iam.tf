@@ -1,9 +1,9 @@
 locals {
-  irsa_role_create = var.enabled && var.rbac_create && var.service_account_create && var.irsa_role_create
+  irsa_policy_enabled = var.enabled && var.rbac_create && var.service_account_create && var.irsa_role_create == false
 }
 
 data "aws_iam_policy_document" "this" {
-  count = var.enabled && var.irsa_policy == null && local.irsa_role_create != false ? 1 : 0
+  count = var.enabled && var.irsa_policy == null && local.irsa_policy_enabled ? 1 : 0
 
   statement {
     sid    = "ChangeResourceRecordSets"
