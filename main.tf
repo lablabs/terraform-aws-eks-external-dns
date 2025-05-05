@@ -19,15 +19,15 @@ locals {
 
   addon_irsa = {
     (local.addon.name) = {
-      irsa_policy         = var.irsa_policy != null ? var.irsa_policy : try(data.aws_iam_policy_document.this[0].json, "")
       irsa_policy_enabled = local.irsa_policy_enabled
+      irsa_policy         = var.irsa_policy != null ? var.irsa_policy : try(data.aws_iam_policy_document.this[0].json, "")
     }
   }
 
   addon_values = yamlencode({
     aws = {
       region        = data.aws_region.current.name
-      assumeRoleArn = var.irsa_assume_role_arn != null ? var.irsa_assume_role_arn : ""
+      assumeRoleArn = var.irsa_assume_role_arns != null ? var.irsa_assume_role_arns[0] : ""
     }
     rbac = {
       create = var.rbac_create != null ? var.rbac_create : true
