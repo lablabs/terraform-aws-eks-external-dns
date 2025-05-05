@@ -6,3 +6,6 @@ README.md
 .secrets.baseline
 .github/workflows/renovate.yaml
 renovate.json
+variables-addon-oidc.tf
+addon-oidc.tf
+iam.tf
