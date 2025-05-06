@@ -15,6 +15,7 @@ locals {
 
     helm_chart_version = "1.15.1"
     helm_repo_url      = "https://kubernetes-sigs.github.io/external-dns"
+
   }
 
   addon_irsa = {
@@ -38,5 +39,8 @@ locals {
         "eks.amazonaws.com/role-arn" = module.addon-irsa[local.addon.name].iam_role_attributes.arn
       } : tomap({})
     }
+    extraArgs = concat(
+      one(var.irsa_assume_role_arns[*]) != null ? ["--aws-assume-role=${var.irsa_assume_role_arns[0]}"] : [],
+    )
   })
 }
