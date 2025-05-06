@@ -39,6 +39,6 @@ locals {
         "eks.amazonaws.com/role-arn" = module.addon-irsa[local.addon.name].iam_role_attributes.arn
       } : tomap({})
     }
-    extraArgs = one(var.irsa_assume_role_arns[*]) != null ? ["--aws-assume-role=${var.irsa_assume_role_arns[0]}"] : []
+    extraArgs = one(var.irsa_assume_role_arns[*]) != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns[*])}"] : []
   })
 }
