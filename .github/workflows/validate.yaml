@@ -11,42 +11,45 @@ on:
       - master
 
 jobs:
-  versionExtract:
+  extract-version:
     name: Extract min/max Terraform versions
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Extract Terraform min/max versions
-        id: minMax
-        uses: clowdhaus/terraform-min-max@main
+        id: terraform-min-max
+        uses: clowdhaus/terraform-min-max@f489335873df04c3ce04b5e73f385a726d910039 # v1.3.2
         with:
           directory: .
     outputs:
-      minVersion: ${{ steps.minMax.outputs.minVersion }}
-      maxVersion: ${{ steps.minMax.outputs.maxVersion }}
+      minVersion: ${{ steps.terraform-min-max.outputs.minVersion }}
+      maxVersion: ${{ steps.terraform-min-max.outputs.maxVersion }}
 
   terraform-validate:
-    runs-on: ubuntu-22.04
-    needs: versionExtract
+    runs-on: ubuntu-24.04
+    needs: extract-version
     strategy:
       matrix:
         tf_ver:
-          - ${{ needs.versionExtract.outputs.minVersion }}
-          - ${{ needs.versionExtract.outputs.maxVersion }}
-
+          - ${{ needs.extract-version.outputs.minVersion }}
+          - ${{ needs.extract-version.outputs.maxVersion }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ${{ matrix.tf_ver }}
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
-    - name: Terraform Init
-      id: init
-      run: terraform init
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: ${{ matrix.tf_ver }}
 
-    - name: Terraform Validate
-      id: validate
-      run: terraform validate
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate

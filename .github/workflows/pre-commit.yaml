@@ -1,0 +1,69 @@
+name: pre-commit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pre-commit-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # renovate: datasource=github-releases depName=asdf-vm/asdf
+  ASDF_VERSION: 31e8c93004abd76253d186b8896785895069749b # v0.15.0 # pragma: allowlist secret
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup ASDF
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+
+      - name: Cache ASDF
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        id: asdf-cache
+        with:
+          # https://github.com/asdf-vm/asdf/blob/master/.gitignore
+          path: |
+            ~/.asdf/installs
+            ~/.asdf/plugins
+            ~/.asdf/shims
+          key: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}
+          restore-keys: ${{ runner.os }}-asdf-
+
+      - name: Install ASDF
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+        if: ${{ steps.asdf-cache.outputs.cache-hit != 'true' }}
+        with:
+          asdf_branch: ${{ env.ASDF_VERSION }}
+
+      - name: Reshim installed ASDF tools
+        shell: bash
+        run: asdf reshim
+
+      - name: Cache pip
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.cache/pip/
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '.pre-commit-config.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install pip dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pre-commit
+        run: pre-commit run --show-diff-on-failure --color=always --all-files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required for zizmor

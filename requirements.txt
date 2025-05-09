@@ -1,1 +1,2 @@
-checkov==2.2.158
+python-hcl2==5.1.1
+Jinja2==3.1.6
