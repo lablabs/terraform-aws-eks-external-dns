@@ -22,6 +22,23 @@ module "addon_installation_helm" {
   })
 }
 
+module "addon_installation_helm_pod_identity" {
+  source = "../../"
+
+  enabled           = true
+  argo_enabled      = false
+  argo_helm_enabled = false
+
+  cluster_name = module.eks_cluster.eks_cluster_id
+
+  irsa_role_create         = false
+  pod_identity_role_create = true
+
+  values = yamlencode({
+    # insert sample values here
+  })
+}
+
 # Please, see README.md and Argo Kubernetes deployment method for implications of using Kubernetes installation method
 module "addon_installation_argo_kubernetes" {
   source = "../../"
