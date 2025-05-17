@@ -9,25 +9,25 @@ variable "helm_enabled" {
 variable "helm_chart_name" {
   type        = string
   default     = null
-  description = "Helm chart name to be installed. Required if `argo_source_type` is set to `helm`. Defaults to `null`."
+  description = "Helm chart name to be installed. Required if `argo_source_type` is set to `helm`. Defaults to `\"\"`."
 }
 
 variable "helm_chart_version" {
   type        = string
   default     = null
-  description = "Version of the Helm chart. Required if `argo_source_type` is set to `helm`. Defaults to `null`."
+  description = "Version of the Helm chart. Required if `argo_source_type` is set to `helm`. Defaults to `\"\"`."
 }
 
 variable "helm_release_name" {
   type        = string
   default     = null
-  description = "Helm release name. Required if `argo_source_type` is set to `helm`. Defaults to `null`."
+  description = "Helm release name. Required if `argo_source_type` is set to `helm`. Defaults to `\"\"`."
 }
 
 variable "helm_repo_url" {
   type        = string
   default     = null
-  description = "Helm repository. Required if `argo_source_type` is set to `helm`. Defaults to `null`."
+  description = "Helm repository. Required if `argo_source_type` is set to `helm`. Defaults to `\"\"`."
 }
 
 variable "helm_create_namespace" {
@@ -57,7 +57,7 @@ variable "values" {
 variable "argo_name" {
   type        = string
   default     = null
-  description = "Name of the ArgoCD Application. Required if `argo_source_type` is set to `kustomize` or `directory`.  If `argo_source_type` is set to `helm`, ArgoCD Application name will equal `helm_release_name`. Defaults to `null`."
+  description = "Name of the ArgoCD Application. Required if `argo_source_type` is set to `kustomize` or `directory`.  If `argo_source_type` is set to `helm`, ArgoCD Application name will equal `helm_release_name`. Defaults to `\"\"`."
 }
 
 variable "argo_namespace" {
@@ -117,19 +117,19 @@ variable "argo_source_type" {
 variable "argo_source_repo_url" {
   type        = string
   default     = null
-  description = "ArgoCD Application source repo URL. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `null`."
+  description = "ArgoCD Application source repo URL. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `\"\"`."
 }
 
 variable "argo_source_target_revision" {
   type        = string
   default     = null
-  description = "ArgoCD Application source target revision. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `null`."
+  description = "ArgoCD Application source target revision. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `\"\"`."
 }
 
 variable "argo_source_path" {
   type        = string
   default     = null
-  description = "ArgoCD Application source path. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `null`."
+  description = "ArgoCD Application source path. Required if `argo_source_type` is set to `kustomize` or `directory`. Defaults to `\"\"`."
 }
 
 variable "argo_destination_server" {
@@ -171,7 +171,13 @@ variable "argo_apiversion" {
 variable "argo_spec" {
   type        = any
   default     = null
-  description = "ArgoCD Application spec configuration. Override or create additional spec parameters. Defaults to `{}`."
+  description = "ArgoCD Application spec configuration. Configuration is extended by deep merging with the default spec parameters. Defaults to `{}`."
+}
+
+variable "argo_spec_override" {
+  type        = any
+  default     = null
+  description = "ArgoCD Application spec configuration. Configuration is overriden by merging natively with the default spec parameters. Defaults to `{}`."
 }
 
 variable "argo_operation" {
