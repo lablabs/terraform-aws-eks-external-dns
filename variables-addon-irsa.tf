@@ -27,13 +27,13 @@ variable "service_account_create" {
 variable "service_account_name" {
   type        = string
   default     = null
-  description = "The Kubernetes Service Account name. Defaults to the addon name. Defaults to `\"\"`."
+  description = "The Kubernetes Service Account name. Defaults to `\"\"`."
 }
 
 variable "service_account_namespace" {
   type        = string
   default     = null
-  description = "The Kubernetes Service Account namespace. Defaults to the addon namespace. Defaults to `\"\"`."
+  description = "The Kubernetes Service Account namespace. Defaults to `\"\"`."
 }
 
 variable "irsa_role_create" {
