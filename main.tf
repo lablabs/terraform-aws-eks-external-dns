@@ -4,10 +4,8 @@
  * A terraform module to deploy the [ExternalDNS](https://kubernetes-sigs.github.io/external-dns/latest) on Amazon EKS cluster.
  *
  * [![Terraform validate](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/validate.yaml)
- * [![pre-commit](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/pre-commit.yml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/pre-commit.yml)
- *
+ * [![pre-commit](https://github.com/lablabs/terraform-aws-eks-external-dns/workflows/pre-commit.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-external-dns/actions/workflows/pre-commit.yaml)
  */
-
 locals {
   addon = {
     name      = "external-dns"
@@ -41,7 +39,7 @@ locals {
       } : tomap({})
     }
 
-    extraArgs = one(var.irsa_assume_role_arns[*]) != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns[*])}"] : []
+    extraArgs = one(var.irsa_assume_role_arns) != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns)}"] : []
   })
 
   addon_depends_on = []
