@@ -1,7 +1,7 @@
 # IMPORTANT: This file is synced with the "terraform-aws-eks-universal-addon" module. Any changes to this file might be overwritten upon the next release of that module.
 locals {
   addon_argo_source_type         = var.argo_source_type != null ? var.argo_source_type : try(local.addon.argo_source_type, "helm")
-  addon_argo_source_helm_enabled = local.addon_argo_source_type == "helm"
+  addon_argo_source_helm_enabled = local.addon_argo_source_type == "helm" || local.addon_argo_source_type == "helm-directory"
 
   addon_argo_name         = var.argo_name != null ? var.argo_name : try(local.addon.argo_name, local.addon.name)
   addon_helm_release_name = var.helm_release_name != null ? var.helm_release_name : try(local.addon.helm_release_name, local.addon.name)
@@ -11,7 +11,7 @@ locals {
 }
 
 module "addon" {
-  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon?ref=v0.0.18"
+  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon?ref=v0.0.21"
 
   enabled = var.enabled
 
