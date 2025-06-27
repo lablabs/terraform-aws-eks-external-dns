@@ -13,7 +13,7 @@ repos:
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
-    rev: 55d0143972eec4905fdaea2f444f1e88218f9dce # v1.96.3 # pragma: allowlist secret
+    rev: 2f8bda194a420ad77a050a9de627d77a74841fdc # v1.99.4 # pragma: allowlist secret
     hooks:
       - id: terraform_validate
       - id: terraform_fmt
@@ -29,7 +29,20 @@ repos:
       - id: terraform_checkov
         args:
           - "--args=--quiet --skip-check CKV_TF_1" # CKV_TF_1: "Ensure Terraform module sources use a commit hash"
-      - id: terraform_docs
+
+  - repo: https://github.com/lablabs/luactl
+    # renovate: datasource=github-tags depName=lablabs/luactl
+    rev: 818d633e5f41c26a47bb31307535de89c6aba73d # v0.0.1 # pragma: allowlist secret
+    hooks:
+      - id: sync # should be run before terraform_docs
+        name: Luactl sync variables
+        files: addon.*\.tf$
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
+    rev: 55d0143972eec4905fdaea2f444f1e88218f9dce # v1.96.3 # pragma: allowlist secret
+    hooks:
+      - id: terraform_docs # should be run after luactl sync
         args:
           - "--args=--config=.terraform-docs.yml"
 
@@ -46,13 +59,3 @@ repos:
     rev: 07a06156e31897fbb5ba0e22a961e8e3c2a0677b # v1.16.0 # pragma: allowlist secret
     hooks:
       - id: zizmor
-
-  - repo: local
-    hooks:
-      - id: sync-variables
-        name: Sync module variables
-        entry: ./scripts/sync-variables.py
-        language: system
-        types: [python]
-        always_run: true
-        pass_filenames: false
