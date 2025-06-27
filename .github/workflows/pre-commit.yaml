@@ -56,12 +56,9 @@ jobs:
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.cache/pip/
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '.pre-commit-config.yaml') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('.pre-commit-config.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Install pip dependencies
-        run: pip install -r requirements.txt
 
       - name: Run pre-commit
         run: pre-commit run --show-diff-on-failure --color=always --all-files
