@@ -54,6 +54,12 @@ variable "irsa_role_name" {
   description = "IRSA role name. The value is prefixed by `irsa_role_name_prefix`. Either `irsa_role_name` or `irsa_role_name_prefix` must be set. Defaults to `\"\"`."
 }
 
+variable "irsa_role_additional_trust_policies" {
+  type        = map(any)
+  default     = null
+  description = "Map of additional trust policy statements to attach to the IRSA role where map key is a statement SID and value is a statement object. Defaults to `{}`."
+}
+
 variable "irsa_policy_enabled" {
   type        = bool
   default     = null
@@ -111,13 +117,13 @@ variable "irsa_assume_role_policy_condition_values" {
 variable "cluster_name" {
   type        = string
   default     = null
-  description = "The name of the cluster (required for pod identity). Defaults to `\"\"`."
+  description = "The name of the cluster (required for Pod Identity). Defaults to `\"\"`."
 }
 
 variable "pod_identity_role_create" {
   type        = bool
   default     = null
-  description = "Whether to create pod identity role and annotate Service Account. Defaults to `false`."
+  description = "Whether to create Pod Identity role and annotate Service Account. Defaults to `false`."
 }
 
 variable "pod_identity_role_name_prefix" {
@@ -132,6 +138,12 @@ variable "pod_identity_role_name" {
   description = "Pod identity role name. The value is prefixed by `pod_identity_role_name_prefix`. Either `pod_identity_role_name` or `pod_identity_role_name_prefix` must be set. Defaults to `\"\"`."
 }
 
+variable "pod_identity_role_additional_trust_policies" {
+  type        = map(any)
+  default     = null
+  description = "Additional trust policy statements to attach to the Pod Identity role where map key is a statement SID and value is a statement object. Defaults to `{}`."
+}
+
 variable "pod_identity_policy_enabled" {
   type        = bool
   default     = null
@@ -141,19 +153,19 @@ variable "pod_identity_policy_enabled" {
 variable "pod_identity_policy" {
   type        = string
   default     = null
-  description = "AWS IAM policy JSON document to be attached to the pod identity role. Applied only if `pod_identity_policy_enabled` is `true`. Defaults to `\"\"`."
+  description = "AWS IAM policy JSON document to be attached to the Pod Identity role. Applied only if `pod_identity_policy_enabled` is `true`. Defaults to `\"\"`."
 }
 
 variable "pod_identity_permissions_boundary" {
   type        = string
   default     = null
-  description = "ARN of the policy that is used to set the permissions boundary for the pod identity role. Defaults to `null`."
+  description = "ARN of the policy that is used to set the permissions boundary for the Pod Identity role. Defaults to `null`."
 }
 
 variable "pod_identity_additional_policies" {
   type        = map(string)
   default     = null
-  description = "Map of the additional policies to be attached to pod identity role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`."
+  description = "Map of the additional policies to be attached to Pod Identity role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`."
 }
 
 variable "pod_identity_tags" {

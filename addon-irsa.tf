@@ -2,7 +2,7 @@
 module "addon-irsa" {
   for_each = local.addon_irsa
 
-  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa?ref=v0.0.22"
+  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa?ref=v0.0.23"
 
   enabled = var.enabled
 
@@ -18,6 +18,8 @@ module "addon-irsa" {
   irsa_role_create      = var.irsa_role_create != null ? var.irsa_role_create : lookup(each.value, "irsa_role_create", null)
   irsa_role_name_prefix = var.irsa_role_name_prefix != null ? var.irsa_role_name_prefix : lookup(each.value, "irsa_role_name_prefix", "${local.addon.name}-irsa")
   irsa_role_name        = var.irsa_role_name != null ? var.irsa_role_name : lookup(each.value, "irsa_role_name", local.addon_name)
+
+  irsa_role_additional_trust_policies = var.irsa_role_additional_trust_policies != null ? var.irsa_role_additional_trust_policies : lookup(each.value, "irsa_role_additional_trust_policies", null)
 
   irsa_policy_enabled       = var.irsa_policy_enabled != null ? var.irsa_policy_enabled : lookup(each.value, "irsa_policy_enabled", null)
   irsa_policy               = var.irsa_policy != null ? var.irsa_policy : lookup(each.value, "irsa_policy", null)
@@ -37,6 +39,8 @@ module "addon-irsa" {
   pod_identity_role_create      = var.pod_identity_role_create != null ? var.pod_identity_role_create : lookup(each.value, "pod_identity_role_create", null)
   pod_identity_role_name_prefix = var.pod_identity_role_name_prefix != null ? var.pod_identity_role_name_prefix : lookup(each.value, "pod_identity_role_name_prefix", "${local.addon.name}-pi")
   pod_identity_role_name        = var.pod_identity_role_name != null ? var.pod_identity_role_name : lookup(each.value, "pod_identity_role_name", local.addon_name)
+
+  pod_identity_role_additional_trust_policies = var.pod_identity_role_additional_trust_policies != null ? var.pod_identity_role_additional_trust_policies : lookup(each.value, "pod_identity_role_additional_trust_policies", null)
 
   pod_identity_policy_enabled       = var.pod_identity_policy_enabled != null ? var.pod_identity_policy_enabled : lookup(each.value, "pod_identity_policy_enabled", null)
   pod_identity_policy               = var.pod_identity_policy != null ? var.pod_identity_policy : lookup(each.value, "pod_identity_policy", null)
