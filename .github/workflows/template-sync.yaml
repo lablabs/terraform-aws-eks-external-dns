@@ -13,7 +13,7 @@ concurrency:
 
 env:
   # renovate: datasource=github-releases depName=asdf-vm/asdf
-  ASDF_VERSION: 31e8c93004abd76253d186b8896785895069749b # v0.15.0 # pragma: allowlist secret
+  ASDF_VERSION: 0.18.0
 
 jobs:
   universal-addon:
@@ -54,7 +54,9 @@ jobs:
           is_pr_cleanup: true
 
       - name: Setup ASDF
-        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
+        with:
+          asdf_version: ${{ env.ASDF_VERSION }}
 
       - name: Cache ASDF
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
@@ -65,26 +67,19 @@ jobs:
             ~/.asdf/installs
             ~/.asdf/plugins
             ~/.asdf/shims
+            ~/.cache/pip
           key: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}
-          restore-keys: ${{ runner.os }}-asdf-
+          restore-keys: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}-
 
       - name: Install ASDF
-        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
         if: ${{ steps.asdf-cache.outputs.cache-hit != 'true' }}
         with:
-          asdf_branch: ${{ env.ASDF_VERSION }}
+          asdf_version: ${{ env.ASDF_VERSION }}
 
       - name: Reshim installed ASDF tools
         shell: bash
         run: asdf reshim
-
-      - name: Cache pip
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: ~/.cache/pip/
-          key: ${{ runner.os }}-pip-${{ hashFiles('.pre-commit-config.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Update README.md
         run: pre-commit run --show-diff-on-failure --color=always terraform_docs --all-files || true

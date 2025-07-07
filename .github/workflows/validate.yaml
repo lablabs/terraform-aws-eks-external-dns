@@ -23,7 +23,7 @@ jobs:
 
       - name: Extract Terraform min/max versions
         id: terraform-min-max
-        uses: clowdhaus/terraform-min-max@f489335873df04c3ce04b5e73f385a726d910039 # v1.3.2
+        uses: clowdhaus/terraform-min-max@503e88c41953f537fc2b283a310c85e0a2cd585c # v1.4.0
         with:
           directory: .
     outputs:

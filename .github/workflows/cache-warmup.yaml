@@ -1,18 +1,11 @@
-name: pre-commit
+name: Cache Warmup
 
 on:
-  workflow_dispatch:
-  pull_request:
+  push:
     branches:
-      - main
-      - master
+      - main # caches from the main branch are shared with all other branches and pull requests
 
-permissions:
-  contents: read
-
-concurrency:
-  group: pre-commit-${{ github.ref }}
-  cancel-in-progress: false
+permissions: {}
 
 env:
   # renovate: datasource=github-releases depName=asdf-vm/asdf
@@ -42,21 +35,11 @@ jobs:
             ~/.asdf/plugins
             ~/.asdf/shims
             ~/.cache/pip
-          key: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}
-          restore-keys: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}-
+          key: ${{ runner.os }}-asdf-${{ hashFiles('.tool-versions') }}-warmup
+          restore-keys: ${{ runner.os }}-asdf-
 
       - name: Install ASDF
         uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302 # v4.0.0
         if: ${{ steps.asdf-cache.outputs.cache-hit != 'true' }}
         with:
           asdf_version: ${{ env.ASDF_VERSION }}
-
-      - name: Reshim installed ASDF tools
-        shell: bash
-        run: asdf reshim
-
-      - name: Run pre-commit
-        run: pre-commit run --show-diff-on-failure --color=always --all-files
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required for GH API calls quota
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required for zizmor
