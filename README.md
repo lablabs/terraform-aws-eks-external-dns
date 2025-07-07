@@ -40,7 +40,7 @@ See [basic example](examples/basic) for further information.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.6 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.20 |
@@ -50,8 +50,8 @@ See [basic example](examples/basic) for further information.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_addon"></a> [addon](#module\_addon) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon | v0.0.22 |
-| <a name="module_addon-irsa"></a> [addon-irsa](#module\_addon-irsa) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa | v0.0.22 |
+| <a name="module_addon"></a> [addon](#module\_addon) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon | v0.0.23 |
+| <a name="module_addon-irsa"></a> [addon-irsa](#module\_addon-irsa) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa | v0.0.23 |
 ## Resources
 
 | Name | Type |
@@ -70,7 +70,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_argo_helm_enabled"></a> [argo\_helm\_enabled](#input\_argo\_helm\_enabled) | If set to `true`, the ArgoCD Application manifest will be deployed using Kubernetes provider as a Helm release. Otherwise it'll be deployed as a Kubernetes manifest. See README for more info. Defaults to `false`. | `bool` |
 | <a name="input_argo_helm_values"></a> [argo\_helm\_values](#input\_argo\_helm\_values) | Value overrides to use when deploying ArgoCD Application object with Helm. Defaults to `""`. | `string` |
 | <a name="input_argo_helm_wait_backoff_limit"></a> [argo\_helm\_wait\_backoff\_limit](#input\_argo\_helm\_wait\_backoff\_limit) | Backoff limit for ArgoCD Application Helm release wait job. Defaults to `6`. | `number` |
-| <a name="input_argo_helm_wait_kubectl_version"></a> [argo\_helm\_wait\_kubectl\_version](#input\_argo\_helm\_wait\_kubectl\_version) | Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.33.0`. | `string` |
+| <a name="input_argo_helm_wait_kubectl_version"></a> [argo\_helm\_wait\_kubectl\_version](#input\_argo\_helm\_wait\_kubectl\_version) | Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.33.2`. | `string` |
 | <a name="input_argo_helm_wait_node_selector"></a> [argo\_helm\_wait\_node\_selector](#input\_argo\_helm\_wait\_node\_selector) | Node selector for ArgoCD Application Helm release wait job. Defaults to `{}`. | `map(string)` |
 | <a name="input_argo_helm_wait_timeout"></a> [argo\_helm\_wait\_timeout](#input\_argo\_helm\_wait\_timeout) | Timeout for ArgoCD Application Helm release wait job. Defaults to `10m`. | `string` |
 | <a name="input_argo_helm_wait_tolerations"></a> [argo\_helm\_wait\_tolerations](#input\_argo\_helm\_wait\_tolerations) | Tolerations for ArgoCD Application Helm release wait job. Defaults to `[]`. | `list(any)` |
@@ -94,7 +94,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_aws_partition"></a> [aws\_partition](#input\_aws\_partition) | AWS partition in which the resources are located. Avaliable values are `aws`, `aws-cn`, `aws-us-gov` | `string` |
 | <a name="input_cluster_identity_oidc_issuer"></a> [cluster\_identity\_oidc\_issuer](#input\_cluster\_identity\_oidc\_issuer) | The OIDC Identity issuer for the cluster (required for IRSA). Defaults to `""`. | `string` |
 | <a name="input_cluster_identity_oidc_issuer_arn"></a> [cluster\_identity\_oidc\_issuer\_arn](#input\_cluster\_identity\_oidc\_issuer\_arn) | The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a Service Account (required for IRSA). Defaults to `""`. | `string` |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the cluster (required for pod identity). Defaults to `""`. | `string` |
+| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the cluster (required for Pod Identity). Defaults to `""`. | `string` |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources. | `bool` |
 | <a name="input_helm_atomic"></a> [helm\_atomic](#input\_helm\_atomic) | If set, installation process purges chart on fail. The wait flag will be set automatically if atomic is used. Defaults to `false`. | `bool` |
 | <a name="input_helm_chart_name"></a> [helm\_chart\_name](#input\_helm\_chart\_name) | Helm chart name to be installed. Required if `argo_source_type` is set to `helm`. Defaults to `""`. | `string` |
@@ -138,16 +138,18 @@ See [basic example](examples/basic) for further information.
 | <a name="input_irsa_permissions_boundary"></a> [irsa\_permissions\_boundary](#input\_irsa\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the IRSA role. Defaults to `null`. | `string` |
 | <a name="input_irsa_policy"></a> [irsa\_policy](#input\_irsa\_policy) | AWS IAM policy JSON document to be attached to the IRSA role. Applied only if `irsa_policy_enabled` is `true`. Defaults to `""`. | `string` |
 | <a name="input_irsa_policy_enabled"></a> [irsa\_policy\_enabled](#input\_irsa\_policy\_enabled) | Whether to create IAM policy specified by `irsa_policy`. Defaults to `false`. | `bool` |
+| <a name="input_irsa_role_additional_trust_policies"></a> [irsa\_role\_additional\_trust\_policies](#input\_irsa\_role\_additional\_trust\_policies) | Map of additional trust policy statements to attach to the IRSA role where map key is a statement SID and value is a statement object. Defaults to `{}`. | `map(any)` |
 | <a name="input_irsa_role_create"></a> [irsa\_role\_create](#input\_irsa\_role\_create) | Whether to create IRSA role and annotate Service Account. Defaults to `true`. | `bool` |
 | <a name="input_irsa_role_name"></a> [irsa\_role\_name](#input\_irsa\_role\_name) | IRSA role name. The value is prefixed by `irsa_role_name_prefix`. Either `irsa_role_name` or `irsa_role_name_prefix` must be set. Defaults to `""`. | `string` |
 | <a name="input_irsa_role_name_prefix"></a> [irsa\_role\_name\_prefix](#input\_irsa\_role\_name\_prefix) | IRSA role name prefix. Either `irsa_role_name_prefix` or `irsa_role_name` must be set. Defaults to `""`. | `string` |
 | <a name="input_irsa_tags"></a> [irsa\_tags](#input\_irsa\_tags) | IRSA resources tags. Defaults to `{}`. | `map(string)` |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The Kubernetes Namespace in which the Helm chart will be installed (required). | `string` |
-| <a name="input_pod_identity_additional_policies"></a> [pod\_identity\_additional\_policies](#input\_pod\_identity\_additional\_policies) | Map of the additional policies to be attached to pod identity role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
-| <a name="input_pod_identity_permissions_boundary"></a> [pod\_identity\_permissions\_boundary](#input\_pod\_identity\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the pod identity role. Defaults to `null`. | `string` |
-| <a name="input_pod_identity_policy"></a> [pod\_identity\_policy](#input\_pod\_identity\_policy) | AWS IAM policy JSON document to be attached to the pod identity role. Applied only if `pod_identity_policy_enabled` is `true`. Defaults to `""`. | `string` |
+| <a name="input_pod_identity_additional_policies"></a> [pod\_identity\_additional\_policies](#input\_pod\_identity\_additional\_policies) | Map of the additional policies to be attached to Pod Identity role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
+| <a name="input_pod_identity_permissions_boundary"></a> [pod\_identity\_permissions\_boundary](#input\_pod\_identity\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the Pod Identity role. Defaults to `null`. | `string` |
+| <a name="input_pod_identity_policy"></a> [pod\_identity\_policy](#input\_pod\_identity\_policy) | AWS IAM policy JSON document to be attached to the Pod Identity role. Applied only if `pod_identity_policy_enabled` is `true`. Defaults to `""`. | `string` |
 | <a name="input_pod_identity_policy_enabled"></a> [pod\_identity\_policy\_enabled](#input\_pod\_identity\_policy\_enabled) | Whether to create IAM policy specified by `pod_identity_policy`. Defaults to `false`. | `bool` |
-| <a name="input_pod_identity_role_create"></a> [pod\_identity\_role\_create](#input\_pod\_identity\_role\_create) | Whether to create pod identity role and annotate Service Account. Defaults to `false`. | `bool` |
+| <a name="input_pod_identity_role_additional_trust_policies"></a> [pod\_identity\_role\_additional\_trust\_policies](#input\_pod\_identity\_role\_additional\_trust\_policies) | Additional trust policy statements to attach to the Pod Identity role where map key is a statement SID and value is a statement object. Defaults to `{}`. | `map(any)` |
+| <a name="input_pod_identity_role_create"></a> [pod\_identity\_role\_create](#input\_pod\_identity\_role\_create) | Whether to create Pod Identity role and annotate Service Account. Defaults to `false`. | `bool` |
 | <a name="input_pod_identity_role_name"></a> [pod\_identity\_role\_name](#input\_pod\_identity\_role\_name) | Pod identity role name. The value is prefixed by `pod_identity_role_name_prefix`. Either `pod_identity_role_name` or `pod_identity_role_name_prefix` must be set. Defaults to `""`. | `string` |
 | <a name="input_pod_identity_role_name_prefix"></a> [pod\_identity\_role\_name\_prefix](#input\_pod\_identity\_role\_name\_prefix) | Pod identity role name prefix. Either `pod_identity_role_name_prefix` or `pod_identity_role_name` must be set. Defaults to `""`. | `string` |
 | <a name="input_pod_identity_tags"></a> [pod\_identity\_tags](#input\_pod\_identity\_tags) | Pod identity resources tags. Defaults to `{}`. | `map(string)` |
