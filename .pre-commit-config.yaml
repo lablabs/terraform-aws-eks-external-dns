@@ -13,7 +13,7 @@ repos:
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
-    rev: 2f8bda194a420ad77a050a9de627d77a74841fdc # v1.99.4 # pragma: allowlist secret
+    rev: c0f51014b8ec51c4455a7dac40697be15e285668 # v1.99.5 # pragma: allowlist secret
     hooks:
       - id: terraform_validate
       - id: terraform_fmt
@@ -40,7 +40,7 @@ repos:
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
-    rev: 2f8bda194a420ad77a050a9de627d77a74841fdc # v1.99.4 # pragma: allowlist secret
+    rev: c0f51014b8ec51c4455a7dac40697be15e285668 # v1.99.5 # pragma: allowlist secret
     hooks:
       - id: terraform_docs # should be run after luactl sync
         args:
