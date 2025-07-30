@@ -1,6 +1,6 @@
 terraform 1.5.7
 terraform-docs 0.20.0
 tflint 0.50.3
-checkov 3.2.447
-awscli 2.27.49
+checkov 3.2.457
+awscli 2.27.62
 pre-commit 4.2.0
