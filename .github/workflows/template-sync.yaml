@@ -36,7 +36,7 @@ jobs:
           persist-credentials: false
 
       - name: Sync universal-addon template
-        uses: AndreasAugustin/actions-template-sync@bcb94410a4f1dffdfe5eaabc8234c3b8e76ebc5b # v2.5.1
+        uses: AndreasAugustin/actions-template-sync@8ec19a5f2721ffb81ff809aa340ddf75e6a85ea6 # v2.5.2
         with:
           source_gh_token: ${{ steps.template-sync-app-token.outputs.token }}
           source_repo_path: lablabs/terraform-aws-eks-universal-addon

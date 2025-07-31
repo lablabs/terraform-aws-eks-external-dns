@@ -4,6 +4,7 @@ header-from: main.tf
 footer-from: docs/.footer.md
 
 content: |-
+  {{ include "docs/.intro.md" }}
   {{ .Header }}
   {{ include "docs/.addon.md" }}
   {{ .Requirements }}

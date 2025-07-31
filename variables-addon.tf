@@ -105,7 +105,7 @@ variable "argo_helm_wait_backoff_limit" {
 variable "argo_helm_wait_kubectl_version" {
   type        = string
   default     = null
-  description = "Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.33.2`."
+  description = "Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.33.3`."
 }
 
 variable "argo_source_type" {
