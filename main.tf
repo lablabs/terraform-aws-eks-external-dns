@@ -39,7 +39,7 @@ locals {
       } : tomap({})
     }
 
-    extraArgs = one(var.irsa_assume_role_arns) != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns)}"] : []
+    extraArgs = var.irsa_assume_role_arns != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns)}"] : []
   })
 
   addon_depends_on = []
