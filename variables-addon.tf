@@ -1,4 +1,4 @@
-# IMPORTANT: This file is synced with the "terraform-aws-eks-universal-addon" module. Any changes to this file might be overwritten upon the next release of that module.
+# IMPORTANT: This file is synced with the "terraform-aws-eks-universal-addon" template. Any changes to this file might be overwritten upon the next release of the template.
 
 variable "helm_enabled" {
   type        = bool
@@ -105,7 +105,7 @@ variable "argo_helm_wait_backoff_limit" {
 variable "argo_helm_wait_kubectl_version" {
   type        = string
   default     = null
-  description = "Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.33.3`."
+  description = "Version of kubectl to use for ArgoCD Application wait job. Defaults to `1.35.0`."
 }
 
 variable "argo_source_type" {
