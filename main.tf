@@ -39,7 +39,8 @@ locals {
       } : tomap({})
     }
 
-    extraArgs = var.irsa_assume_role_arns != null ? ["--aws-assume-role=${one(var.irsa_assume_role_arns)}"] : []
+    // set aws-assume-role arg only when `irsa_assume_role_arns` are provided, but throw an error where there are more then 1 ARN (not supported)
+    extraArgs = var.irsa_assume_role_arns != null ? (length(var.irsa_assume_role_arns) > 0 ? ["--aws-assume-role=${one(var.irsa_assume_role_arns)}"] : []) : []
   })
 
   addon_depends_on = []
