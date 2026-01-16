@@ -15,11 +15,10 @@ repos:
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
     rev: d0e12caebb2ab0ee8bf98181c8bfe9702bca103d # v1.105.0 # pragma: allowlist secret
     hooks:
-      - id: terraform_validate
       - id: terraform_fmt
       - id: terraform_providers_lock
         args:
-          - --hook-config=--mode=only-check-is-current-lockfile-cross-platform
+          - --hook-config=--mode=check-lockfile-is-cross-platform
           - --args=-platform=darwin_amd64
           - --args=-platform=darwin_arm64
           - --args=-platform=linux_amd64
@@ -32,7 +31,7 @@ repos:
 
   - repo: https://github.com/lablabs/luactl
     # renovate: datasource=github-tags depName=lablabs/luactl
-    rev: 818d633e5f41c26a47bb31307535de89c6aba73d # v0.0.1 # pragma: allowlist secret
+    rev: 8853756704da1483a1c88827f0ee09e4caf4acc6 # v0.0.2 # pragma: allowlist secret
     hooks:
       - id: sync # should be run before terraform_docs
         name: Luactl sync variables

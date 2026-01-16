@@ -1,6 +1,6 @@
-# IMPORTANT: This file is synced with the "terraform-aws-eks-universal-addon" module. Any changes to this file might be overwritten upon the next release of that module.
+# IMPORTANT: This file is synced with the "terraform-aws-eks-universal-addon" template. Any changes to this file might be overwritten upon the next release of the template.
 terraform {
-  required_version = ">= 1.5"
+  required_version = ">= 1.8"
 
   required_providers {
     aws = {
