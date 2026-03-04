@@ -52,7 +52,7 @@ provider "registry.terraform.io/hashicorp/aws" {
 
 provider "registry.terraform.io/hashicorp/helm" {
   version     = "3.1.1"
-  constraints = ">= 2.6.0, >= 3.0.0"
+  constraints = ">= 3.0.0"
   hashes = [
     "h1:/tVXN35+rcMB8KjqtYTIoFl7lxcQyDCCj+vKLXDmXck=",
     "h1:47CqNwkxctJtL/N/JuEj+8QMg8mRNI/NWeKO5/ydfZU=",
