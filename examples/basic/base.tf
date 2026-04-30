@@ -27,7 +27,7 @@ module "eks_cluster" {
   }
 
   name       = "eks"
-  region     = data.aws_region.this.name
+  region     = data.aws_region.this.id
   subnet_ids = module.vpc.public_subnets
 }
 
