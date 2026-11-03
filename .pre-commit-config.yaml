@@ -13,7 +13,7 @@ repos:
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
-    rev: d0e12caebb2ab0ee8bf98181c8bfe9702bca103d # v1.105.0 # pragma: allowlist secret
+    rev: 80c8033123f6d6b9ccd1a9458562ea4180742af7 # v1.109.2 # pragma: allowlist secret
     hooks:
       - id: terraform_fmt
       - id: terraform_providers_lock
@@ -39,7 +39,7 @@ repos:
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     # renovate: datasource=github-releases depName=antonbabenko/pre-commit-terraform
-    rev: d0e12caebb2ab0ee8bf98181c8bfe9702bca103d # v1.105.0 # pragma: allowlist secret
+    rev: 80c8033123f6d6b9ccd1a9458562ea4180742af7 # v1.109.2 # pragma: allowlist secret
     hooks:
       - id: terraform_docs # should be run after luactl sync
         args:
@@ -55,6 +55,6 @@ repos:
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     # renovate: datasource=github-releases depName=zizmorcore/zizmor-pre-commit
-    rev: 7fc963270df722f37707d47ff41265fe8f460822 # v1.20.0 # pragma: allowlist secret
+    rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f # v1.31.1 # pragma: allowlist secret
     hooks:
       - id: zizmor
