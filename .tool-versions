@@ -1,7 +1,7 @@
 terraform 1.12.2
 terraform-docs 0.24.0
-tflint 0.64.0
-checkov 3.3.29
-awscli 2.38.1
+tflint 0.65.0
+checkov 3.3.30
+awscli 2.38.5
 pre-commit 4.7.0
-golang 1.27.2
+golang 1.27.3
