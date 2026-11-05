@@ -17,13 +17,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Extract Terraform min/max versions
         id: terraform-min-max
-        uses: clowdhaus/terraform-min-max@04440fe3b2a1e64eb5ad115f8f7c57c4d6a54333 # v1.4.1
+        uses: clowdhaus/terraform-min-max@5e40f8cf535d84fbd031571abd363ffd81dbfbfc # v3.0.1
         with:
           directory: .
     outputs:
@@ -40,11 +40,11 @@ jobs:
           - ${{ needs.extract-version.outputs.maxVersion }}
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: ${{ matrix.tf_ver }}
 
